@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>TradeLog — The Long Run</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
@@ -62,14 +62,19 @@
     /* ─── CALCULADORA DE TAMAÑO DE POSICIÓN ─── */
     .calc-container { display: grid; grid-template-columns: 1.15fr 1fr; gap: 1.25rem; }
     .calc-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
-    .calc-title { font-size: 13px; font-weight: 700; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .calc-title { font-size: 13px; font-weight: 700; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+    
+    /* Selector de Tipo de Operación Mejorado */
+    .op-toggle { display: inline-flex; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; padding: 2px; }
+    .op-toggle-btn { background: transparent; border: none; color: var(--text-muted); padding: 6px 14px; font-size: 12px; font-weight: 700; font-family: var(--mono); cursor: pointer; border-radius: 6px; transition: all 0.2s; }
+    .op-toggle-btn.active { background: var(--green); color: #fff; box-shadow: 0 2px 6px rgba(0,143,76,0.3); }
+
     .calc-form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.85rem; }
     .calc-group { display: flex; flex-direction: column; gap: 5px; }
     .calc-group.full { grid-column: 1 / -1; }
     .calc-label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); }
     .calc-input-wrap { position: relative; display: flex; align-items: center; }
     
-    /* 16px font-size para neutralizar el auto-zoom de Safari en iPhone */
     .calc-input, .form-input, .form-select, .form-textarea, .search-input { 
       width: 100%; 
       background: var(--bg-secondary); 
@@ -85,24 +90,31 @@
     .calc-input:focus, .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--green-light); }
     .calc-suffix { position: absolute; right: 12px; font-size: 11px; color: var(--text-muted); font-family: var(--mono); pointer-events: none; }
 
-    .calc-results-box { background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }
+    /* Tarjeta Grande de Acciones a Comprar */
+    .hero-shares-box { background: linear-gradient(145deg, rgba(0, 143, 76, 0.16), var(--bg-secondary)); border: 2px solid var(--green); border-radius: 12px; padding: 1.1rem; text-align: center; margin-bottom: 1rem; box-shadow: 0 4px 14px rgba(0,143,76,0.15); }
+    .hero-shares-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--green-light); margin-bottom: 4px; }
+    .hero-shares-num { font-family: var(--mono); font-size: 34px; font-weight: 800; color: #FFFFFF; line-height: 1.1; letter-spacing: -0.5px; }
+    .hero-shares-sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; font-family: var(--mono); }
+
+    .calc-results-box { background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 0.9rem; margin-bottom: 1rem; }
     .calc-res-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border-subtle); }
     .calc-res-item:last-child { border-bottom: none; }
     .calc-res-lbl { font-size: 12px; color: var(--text-secondary); }
-    .calc-res-val { font-family: var(--mono); font-size: 15px; font-weight: 600; color: var(--text-primary); }
-    .calc-res-val.highlight { color: var(--green-light); font-size: 18px; }
-    
+    .calc-res-val { font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--text-primary); }
+
     .calc-targets-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 0.5rem; margin-bottom: 1rem; }
     .calc-target-card { background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 8px; text-align: center; }
     .calc-target-label { font-size: 10px; font-weight: 600; color: var(--text-muted); margin-bottom: 2px; }
     .calc-target-val { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--green-light); }
 
     .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .accounts-table { width: 100%; border-collapse: collapse; margin-top: 4px; font-size: 12px; min-width: 300px; }
+    .accounts-table { width: 100%; border-collapse: collapse; margin-top: 4px; font-size: 12px; min-width: 320px; }
     .accounts-table th { text-align: left; padding: 6px 8px; font-size: 10px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); }
     .accounts-table td { padding: 6px 8px; border-bottom: 1px solid var(--border-subtle); }
-    .accounts-table tr.highlight-jaime { background: rgba(0, 143, 76, 0.08); font-weight: 600; }
+    .accounts-table tr.highlight-jaime { background: rgba(0, 143, 76, 0.1); font-weight: 600; }
     .accounts-table tr.highlight-jaime td { color: var(--green-light); }
+    .subcap-input { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary); font-family: var(--mono); font-size: 13px; padding: 4px 6px; border-radius: 6px; width: 85px; outline: none; }
+    .subcap-input:focus { border-color: var(--green-light); }
 
     .adr-banner { padding: 8px 10px; border-radius: 8px; font-size: 11px; margin-top: 6px; display: flex; align-items: center; gap: 6px; }
     .adr-banner.optimal { background: var(--green-dim); color: var(--green-light); border: 1px solid rgba(0,143,76,0.3); }
@@ -119,7 +131,6 @@
     .stat-value.negative { color: var(--red); }
     .stat-value.neutral { color: var(--text-primary); }
     .stat-sub { font-size: 11px; color: var(--text-secondary); margin-top: 4px; font-family: var(--sans); }
-    .edit-capital-btn { position: absolute; top: 10px; right: 10px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 6px; color: var(--text-secondary); cursor: pointer; padding: 4px 8px; font-size: 10px; }
 
     /* ─── CALENDAR & PANELS ─── */
     .panel-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; }
@@ -203,6 +214,7 @@
       .modal { border-radius: 16px 16px 0 0; }
       .section-header { flex-direction: column; align-items: stretch; }
       .search-box { max-width: 100%; }
+      .hero-shares-num { font-size: 30px; }
     }
 
     @media (min-width: 821px) {
@@ -245,21 +257,22 @@
       <!-- VARIABLES EDITABLES -->
       <div class="calc-card">
         <div class="calc-title">
-          <span>⚙️ Variables de Entrada</span>
-          <select id="c-op-type" class="calc-input" style="width:auto; padding:4px 8px; font-size:12px;" onchange="recalcPositionSize()">
-            <option value="TRADE">Trade (Day/Fast)</option>
-            <option value="SWING" selected>Swing Trading</option>
-          </select>
+          <span>⚙️ Parámetros de Operación</span>
+          <!-- Selector de Operativa Visible -->
+          <div class="op-toggle">
+            <button type="button" class="op-toggle-btn active" id="btn-op-trade" onclick="setOpType('TRADE')">TRADE</button>
+            <button type="button" class="op-toggle-btn" id="btn-op-swing" onclick="setOpType('SWING')">SWING</button>
+          </div>
         </div>
 
         <div class="calc-form-grid">
           <div class="calc-group">
             <label class="calc-label">Ticker</label>
-            <input type="text" id="c-ticker" class="calc-input" placeholder="Ej: FAST, CAKE" style="text-transform:uppercase;">
+            <input type="text" id="c-ticker" class="calc-input" placeholder="Ej: META, AAPL" style="text-transform:uppercase;" oninput="onTickerInput(this.value)">
           </div>
           <div class="calc-group">
             <label class="calc-label">Nombre Empresa</label>
-            <input type="text" id="c-company" class="calc-input" placeholder="Ej: Fastenal Co">
+            <input type="text" id="c-company" class="calc-input" placeholder="Ej: Meta Platforms Inc">
           </div>
 
           <div class="calc-group">
@@ -287,7 +300,7 @@
           <div class="calc-group">
             <label class="calc-label">Riesgo Monetario (1R Total)</label>
             <div class="calc-input-wrap">
-              <input type="text" id="c-risk-usd" class="calc-input" readonly style="opacity:0.8; background:var(--bg-secondary);">
+              <input type="text" id="c-risk-usd" class="calc-input" readonly style="opacity:0.85; background:var(--bg-secondary);">
               <span class="calc-suffix">USD</span>
             </div>
           </div>
@@ -332,34 +345,37 @@
         <div>
           <div class="calc-title">
             <span>📊 Dimensionamiento Global IBKR</span>
-            <span class="badge badge-long" id="badge-total-shares">0 Acciones</span>
+          </div>
+
+          <!-- TARJETA DESTACADA ACCIONES A COMPRAR -->
+          <div class="hero-shares-box">
+            <div class="hero-shares-label">Acciones a Comprar (Total IBKR)</div>
+            <div class="hero-shares-num" id="res-hero-shares">0</div>
+            <div class="hero-shares-sub" id="res-hero-sub">Capital: $0,00 • 0,00% de cartera</div>
           </div>
 
           <div class="calc-results-box">
             <div class="calc-res-item">
-              <span class="calc-res-lbl">Capital Compra Total ($):</span>
-              <span class="calc-res-val" id="res-capital-buy">$0.00</span>
-            </div>
-            <div class="calc-res-item">
-              <span class="calc-res-lbl">% Cartera Global:</span>
-              <span class="calc-res-val" id="res-portfolio-pct">0.00%</span>
-            </div>
-            <div class="calc-res-item">
               <span class="calc-res-lbl">Distancia Stop por acción:</span>
               <span class="calc-res-val" id="res-risk-per-share">$0.00</span>
             </div>
+            <div class="calc-res-item">
+              <span class="calc-res-lbl">Capital Jaime Asignado ($):</span>
+              <span class="calc-res-val" id="res-jaime-cap">$0.00</span>
+            </div>
           </div>
 
-          <!-- DESGLOSE SUBCUENTAS -->
-          <div style="font-size:11px; font-weight:600; text-transform:uppercase; color:var(--text-secondary); margin-bottom:4px;">
-            👥 Reparto Cartera Familiar
+          <!-- DESGLOSE SUBCUENTAS CON CAPITALES EDITABLES -->
+          <div style="font-size:11px; font-weight:600; text-transform:uppercase; color:var(--text-secondary); margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;">
+            <span>👥 Cartera Familiar (Capital Editable €)</span>
+            <span style="font-size:10px; color:var(--text-muted);">Sincroniza Rendimiento</span>
           </div>
           <div class="table-responsive" style="background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:8px; margin-bottom:1rem;">
             <table class="accounts-table">
               <thead>
                 <tr>
                   <th>Cuenta</th>
-                  <th>Base</th>
+                  <th>Capital (€)</th>
                   <th>Peso</th>
                   <th>Acciones</th>
                   <th>Importe ($)</th>
@@ -441,9 +457,9 @@
     <div class="dashboard-grid">
       <div class="stat-group">
         <div class="stat-card">
-          <button class="edit-capital-btn" onclick="configurarCapital()">Editar</button>
-          <div class="stat-label">Capital Base</div>
+          <div class="stat-label">Capital Base (Jaime)</div>
           <div class="stat-value neutral" id="stat-initial-cap">—</div>
+          <div class="stat-sub">Sincronizado con Calculadora</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Capital Actual</div>
@@ -530,7 +546,7 @@
           <input type="date" class="form-input" id="f-date">
         </div>
         <div class="form-group">
-          <label class="form-label">Símbolo (Ej: NQ, TSLA)</label>
+          <label class="form-label">Símbolo (Ej: META, AAPL)</label>
           <input type="text" class="form-input" id="f-symbol" style="text-transform:uppercase;">
         </div>
         <div class="form-group">
@@ -607,21 +623,43 @@ function fmtPrice(num) {
   return parseFloat(num).toLocaleString('es-ES', { maximumFractionDigits: 5 });
 }
 
-let initialCapital = 50000;
-let trades = [];
-let computedTrades = [];
-let editingId = null;
-let currentImage = null;
+// Diccionario de autocompletado Ticker -> Nombre
+const COMPANY_TICKERS = {
+  "META": "Meta Platforms Inc",
+  "AAPL": "Apple Inc",
+  "CAKE": "Cheesecake Factory Inc",
+  "FAST": "Fastenal Co",
+  "SPOT": "Spotify Technology SA",
+  "AMD": "Advanced Micro Devices Inc",
+  "VRSN": "VeriSign Inc",
+  "CSU": "Constellation Software Inc",
+  "NVDA": "NVIDIA Corp",
+  "MSFT": "Microsoft Corp",
+  "AMZN": "Amazon.com Inc",
+  "GOOGL": "Alphabet Inc",
+  "TSLA": "Tesla Inc",
+  "PLTR": "Palantir Technologies Inc",
+  "CRWD": "CrowdStrike Holdings Inc",
+  "NET": "Cloudflare Inc",
+  "DDOG": "Datadog Inc"
+};
 
-const familyAccounts = [
+// Subcuentas editables en calculadora
+let familyAccounts = [
   { name: 'Jaime', eur: 21200 },
   { name: 'Irene', eur: 6000 },
   { name: 'Rosa',  eur: 5600 },
   { name: 'Sara',  eur: 5600 }
 ];
 
-let currentFxRate = 42810 / 38400;
+let initialCapital = familyAccounts[0].eur; // Sincronizado con Jaime
+let currentFxRate = 42810 / 38400; // Tasa implícita inicial EUR/USD
+let currentOpType = 'TRADE';
 let computedJaimeShares = 0;
+let trades = [];
+let computedTrades = [];
+let editingId = null;
+let currentImage = null;
 
 const calDate = new Date();
 let currentMonth = calDate.getMonth();
@@ -632,6 +670,7 @@ const fullMonthNames = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio"
 document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
   document.getElementById('currentDate').textContent = new Date().toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long' });
+  renderSubaccountsTable();
   recalcPositionSize();
   await cargarDatosDeSupabase();
 });
@@ -641,6 +680,8 @@ async function cargarDatosDeSupabase() {
     const { data: setRes } = await db.from('tradelog_settings').select('value').eq('key', 'initial_capital').maybeSingle();
     if (setRes && setRes.value) {
       initialCapital = parseFloat(setRes.value);
+      familyAccounts[0].eur = initialCapital;
+      updateTotalFromSubaccounts();
     }
 
     const { data: tradeRes, error } = await db.from('tradelog_trades').select('*');
@@ -663,6 +704,71 @@ function switchTab(tabId) {
   
   if (tabId === 'calendar') renderCalendar();
   if (tabId === 'stats') { updateStats(); renderChart(); }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   AUTOCOMPLETADO DE TICKER
+───────────────────────────────────────────────────────────── */
+function onTickerInput(val) {
+  const upper = (val || '').toUpperCase().trim();
+  if (COMPANY_TICKERS[upper]) {
+    document.getElementById('c-company').value = COMPANY_TICKERS[upper];
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SELECTOR VISIBLE DE TIPO DE OPERACIÓN
+───────────────────────────────────────────────────────────── */
+function setOpType(type) {
+  currentOpType = type;
+  document.getElementById('btn-op-trade').classList.toggle('active', type === 'TRADE');
+  document.getElementById('btn-op-swing').classList.toggle('active', type === 'SWING');
+  recalcPositionSize();
+}
+
+/* ─────────────────────────────────────────────────────────────
+   GESTIÓN DE SUBCUENTAS Y CAPITALES
+───────────────────────────────────────────────────────────── */
+function renderSubaccountsTable() {
+  const tbody = document.getElementById('subaccountsTableBody');
+  const totalBaseEur = familyAccounts.reduce((acc, a) => acc + a.eur, 0);
+
+  tbody.innerHTML = familyAccounts.map((acc, idx) => {
+    const weight = totalBaseEur > 0 ? (acc.eur / totalBaseEur) : 0;
+    const isJaime = acc.name === 'Jaime';
+
+    return `<tr class="${isJaime ? 'highlight-jaime' : ''}">
+      <td><strong>${acc.name}</strong> ${isJaime ? '(Tú)' : ''}</td>
+      <td>
+        <input type="number" inputmode="decimal" class="subcap-input" value="${acc.eur}" step="100" onchange="onSubaccountChange(${idx}, this.value)"> €
+      </td>
+      <td class="cell-mono">${fmt(weight * 100)}%</td>
+      <td class="cell-mono" id="sub-shares-${idx}">0</td>
+      <td class="cell-mono" id="sub-importe-${idx}">$0,00</td>
+    </tr>`;
+  }).join('');
+}
+
+async function onSubaccountChange(idx, val) {
+  const num = parseFloat(val);
+  if (!isNaN(num) && num >= 0) {
+    familyAccounts[idx].eur = num;
+    if (idx === 0) {
+      initialCapital = num; // Sincroniza Jaime con el capital de rendimiento
+      await db.from('tradelog_settings').upsert({ key: 'initial_capital', value: initialCapital.toString() });
+    }
+    updateTotalFromSubaccounts();
+    refreshApp();
+  }
+}
+
+function updateTotalFromSubaccounts() {
+  const totalEur = familyAccounts.reduce((acc, a) => acc + a.eur, 0);
+  document.getElementById('c-cap-eur').value = totalEur;
+  const usd = totalEur * currentFxRate;
+  document.getElementById('c-cap-usd').value = Math.round(usd);
+  renderSubaccountsTable();
+  recalcPositionSize();
 }
 
 function onCalcCapitalEurChange() {
@@ -716,7 +822,6 @@ function recalcPositionSize() {
   const stopPrice = parseFloat(document.getElementById('c-stop-price').value) || 0;
   const stopPct = parseFloat(document.getElementById('c-stop-pct').value) || 0;
   const adr = parseFloat(document.getElementById('c-adr').value) || 0;
-  const opType = document.getElementById('c-op-type').value;
 
   const r1Usd = capUsd * (riskPct / 100);
   document.getElementById('c-risk-usd').value = `$${fmt(r1Usd)}`;
@@ -729,63 +834,62 @@ function recalcPositionSize() {
     const capitalBuy = totalShares * entry;
     const portfolioPct = capUsd > 0 ? (capitalBuy / capUsd) * 100 : 0;
 
-    document.getElementById('badge-total-shares').textContent = `${totalShares} Acciones`;
-    document.getElementById('res-capital-buy').textContent = `$${fmt(capitalBuy)}`;
-    document.getElementById('res-portfolio-pct').textContent = `${fmt(portfolioPct)}%`;
+    document.getElementById('res-hero-shares').textContent = totalShares.toLocaleString('es-ES');
+    document.getElementById('res-hero-sub').textContent = `Capital Total: $${fmt(capitalBuy)} • ${fmt(portfolioPct)}% de cartera`;
     document.getElementById('res-risk-per-share').textContent = `$${fmt(riskPerShare)}`;
 
+    // Targets en R
     document.getElementById('res-target-1r').textContent = `$${fmtPrice(entry + (1 * riskPerShare))}`;
     document.getElementById('res-target-2r').textContent = `$${fmtPrice(entry + (2 * riskPerShare))}`;
     document.getElementById('res-target-3r').textContent = `$${fmtPrice(entry + (3 * riskPerShare))}`;
   } else {
-    document.getElementById('badge-total-shares').textContent = `0 Acciones`;
-    document.getElementById('res-capital-buy').textContent = `$0.00`;
-    document.getElementById('res-portfolio-pct').textContent = `0.00%`;
+    document.getElementById('res-hero-shares').textContent = `0`;
+    document.getElementById('res-hero-sub').textContent = `Capital: $0,00 • 0,00% de cartera`;
     document.getElementById('res-risk-per-share').textContent = `$0.00`;
     document.getElementById('res-target-1r').textContent = `—`;
     document.getElementById('res-target-2r').textContent = `—`;
     document.getElementById('res-target-3r').textContent = `—`;
   }
 
-  const tbody = document.getElementById('subaccountsTableBody');
+  // Actualizar tabla de subcuentas
   const totalBaseEur = familyAccounts.reduce((acc, a) => acc + a.eur, 0);
-
-  tbody.innerHTML = familyAccounts.map(acc => {
-    const weight = acc.eur / totalBaseEur;
+  familyAccounts.forEach((acc, idx) => {
+    const weight = totalBaseEur > 0 ? (acc.eur / totalBaseEur) : 0;
     const accShares = Math.floor(totalShares * weight);
     const accImporte = accShares * entry;
-    const isJaime = acc.name === 'Jaime';
-    if (isJaime) computedJaimeShares = accShares;
 
-    return `<tr class="${isJaime ? 'highlight-jaime' : ''}">
-      <td><strong>${acc.name}</strong> ${isJaime ? '(Tú)' : ''}</td>
-      <td class="cell-mono">${fmt(acc.eur)} €</td>
-      <td class="cell-mono">${fmt(weight * 100)}%</td>
-      <td class="cell-mono"><strong>${accShares}</strong></td>
-      <td class="cell-mono">$${fmt(accImporte)}</td>
-    </tr>`;
-  }).join('');
+    const elShares = document.getElementById(`sub-shares-${idx}`);
+    const elImporte = document.getElementById(`sub-importe-${idx}`);
+    if (elShares) elShares.textContent = accShares;
+    if (elImporte) elImporte.textContent = `$${fmt(accImporte)}`;
 
+    if (acc.name === 'Jaime') {
+      computedJaimeShares = accShares;
+      document.getElementById('res-jaime-cap').textContent = `$${fmt(accImporte)} (${accShares} acc)`;
+    }
+  });
+
+  // Validación Técnica ADR
   const adrBanner = document.getElementById('adr-banner');
   if (adr > 0 && stopPct > 0) {
     adrBanner.style.display = 'flex';
-    if (opType === 'TRADE') {
+    if (currentOpType === 'TRADE') {
       const threshold = 0.5 * adr;
       if (stopPct < threshold) {
         adrBanner.className = 'adr-banner warning';
-        adrBanner.innerHTML = `⚠️ <strong>Stop ceñido (${stopPct.toFixed(2)}% vs 0.5×ADR: ${threshold.toFixed(2)}%)</strong>: Riesgo de ruido.`;
+        adrBanner.innerHTML = `⚠️ <strong>Stop ceñido (${fmt(stopPct)}% vs 0.5×ADR: ${fmt(threshold)}%)</strong>: Riesgo de barrido.`;
       } else {
         adrBanner.className = 'adr-banner optimal';
-        adrBanner.innerHTML = `✅ <strong>Stop óptimo para Trade</strong> (Supera 0.5×ADR: ${threshold.toFixed(2)}%).`;
+        adrBanner.innerHTML = `✅ <strong>Stop óptimo para Trade</strong> (Supera 0.5×ADR: ${fmt(threshold)}%).`;
       }
     } else {
       const threshold = 1.5 * adr;
       if (stopPct > threshold) {
         adrBanner.className = 'adr-banner warning';
-        adrBanner.innerHTML = `⚠️ <strong>Stop amplio (${stopPct.toFixed(2)}% vs 1.5×ADR: ${threshold.toFixed(2)}%)</strong>: Considera afinar entrada.`;
+        adrBanner.innerHTML = `⚠️ <strong>Stop amplio (${fmt(stopPct)}% vs 1.5×ADR: ${fmt(threshold)}%)</strong>: Considera afinar entrada.`;
       } else {
         adrBanner.className = 'adr-banner optimal';
-        adrBanner.innerHTML = `✅ <strong>Stop óptimo para Swing</strong> (Dentro de 1.5×ADR: ${threshold.toFixed(2)}%).`;
+        adrBanner.innerHTML = `✅ <strong>Stop óptimo para Swing</strong> (Dentro de 1.5×ADR: ${fmt(threshold)}%).`;
       }
     }
   } else {
@@ -809,21 +913,21 @@ function pasarCalculoAHistorial() {
 }
 
 function copiarAlPortapapelesDiscord() {
-  const ticker = (document.getElementById('c-ticker').value || 'TICKER').toUpperCase().trim();
-  const company = document.getElementById('c-company').value.trim();
-  const entry = document.getElementById('c-entry').value;
-  const stop = document.getElementById('c-stop-price').value;
-  const stopPct = document.getElementById('c-stop-pct').value;
-  const riskPct = document.getElementById('c-risk-pct').value;
-  const opType = document.getElementById('c-op-type').value;
+  const ticker = (document.getElementById('c-ticker').value || 'CAKE').toUpperCase().trim();
+  const company = document.getElementById('c-company').value.trim() || 'Cheesecake Factory Inc';
+  const entry = parseFloat(document.getElementById('c-entry').value) || 0;
+  const stop = parseFloat(document.getElementById('c-stop-price').value) || 0;
+  const stopPct = parseFloat(document.getElementById('c-stop-pct').value) || 0;
+  const riskPct = parseFloat(document.getElementById('c-risk-pct').value) || 0;
 
-  const text = `**[${opType}]** $${ticker}${company ? ` (${company})` : ''}
-• Entrada: $${entry || '—'}
-• Stop Loss: $${stop || '—'} (${stopPct || '—'}%)
-• Riesgo asumido: ${riskPct}% (1R)`;
+  const text = `[${currentOpType}]
+${company} | $${ticker}
+Precio de compra: $${fmt(entry)}
+Stop Loss: $${fmt(stop)} (-${fmt(stopPct)}%)
+Riesgo asumido: ${fmt(riskPct)}% (1R)`;
 
   navigator.clipboard.writeText(text).then(() => {
-    alert('¡Ficha copiada al portapapeles!');
+    alert('¡Ficha copiada con el formato exacto de Discord!');
   });
 }
 
@@ -933,21 +1037,6 @@ function formatDate(d) {
   if (!d) return '—';
   const [y, m, day] = d.split('-');
   return `${day}/${m}/${y.slice(2)}`;
-}
-
-async function configurarCapital() {
-  const input = prompt("Introduce tu Capital Inicial Base (ej. 50000):", initialCapital);
-  if (input !== null && input.trim() !== '') {
-    let parsed = input.replace(/\./g, '').replace(',', '.');
-    let val = parseFloat(parsed);
-    if (!isNaN(val) && val > 0) {
-      initialCapital = val;
-      await db.from('tradelog_settings').upsert({ key: 'initial_capital', value: initialCapital.toString() });
-      refreshApp();
-    } else {
-      alert("Por favor, introduce un número válido.");
-    }
-  }
 }
 
 function updateStats() {
