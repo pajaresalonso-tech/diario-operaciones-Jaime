@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <!-- Favicon pestaña del navegador (Logo TLR) -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000'><rect width='1000' height='1000' rx='220' fill='%230D1117'/><path d='M654 186 H300 C217 186 150 253 150 336 V700 C150 783 217 850 300 850 H700 C783 850 850 783 850 700 V358' fill='none' stroke='%23008F4C' stroke-width='44' stroke-linecap='round'/><path d='M195 775 L350 470 L462 700 L538 320 L610 500 L745 270' fill='none' stroke='%23008F4C' stroke-width='42' stroke-linecap='round' stroke-linejoin='miter'/><polygon points='814,186 654,186 654,342 708,288 760,340 814,286 760,234' fill='%23008F4C'/></svg>">
-
-  <!-- Icono para pantalla de inicio del iPhone -->
   <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000'><rect width='1000' height='1000' rx='220' fill='%230D1117'/><path d='M654 186 H300 C217 186 150 253 150 336 V700 C150 783 217 850 300 850 H700 C783 850 850 783 850 700 V358' fill='none' stroke='%23008F4C' stroke-width='44' stroke-linecap='round'/><path d='M195 775 L350 470 L462 700 L538 320 L610 500 L745 270' fill='none' stroke='%23008F4C' stroke-width='42' stroke-linecap='round' stroke-linejoin='miter'/><polygon points='814,186 654,186 654,342 708,288 760,340 814,286 760,234' fill='%23008F4C'/></svg>">
   
   <meta charset="UTF-8">
@@ -12,7 +9,6 @@
   <title>TradeLog — The Long Run</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <!-- SDK de Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
@@ -52,13 +48,49 @@
 
     /* ─── NAVIGATION TABS ─── */
     .container { max-width: 1400px; margin: 0 auto; padding: 1.5rem 2rem 3rem; }
-    .tab-nav { display: flex; gap: 15px; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-    .tab-btn { background: transparent; color: var(--text-muted); border: none; font-size: 14px; font-weight: 600; cursor: pointer; padding: 10px 20px; border-radius: 8px; transition: all 0.2s; }
+    .tab-nav { display: flex; gap: 12px; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 10px; overflow-x: auto; }
+    .tab-btn { background: transparent; color: var(--text-muted); border: none; font-size: 14px; font-weight: 600; cursor: pointer; padding: 10px 18px; border-radius: 8px; transition: all 0.2s; white-space: nowrap; }
     .tab-btn:hover { color: var(--text-primary); background: var(--bg-hover); }
     .tab-btn.active { background: var(--bg-hover); color: var(--text-primary); border-bottom: 2px solid var(--green-light); border-radius: 8px 8px 0 0; }
     .tab-content { display: none; animation: fadeIn 0.3s; }
     .tab-content.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ─── CALCULADORA DE TAMAÑO DE POSICIÓN ─── */
+    .calc-container { display: grid; grid-template-columns: 1.15fr 1fr; gap: 1.5rem; }
+    .calc-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+    .calc-title { font-size: 14px; font-weight: 700; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; }
+    .calc-form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .calc-group { display: flex; flex-direction: column; gap: 6px; }
+    .calc-group.full { grid-column: 1 / -1; }
+    .calc-label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); }
+    .calc-input-wrap { position: relative; display: flex; align-items: center; }
+    .calc-input { width: 100%; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; color: var(--text-primary); font-family: var(--mono); font-size: 13px; outline: none; }
+    .calc-input:focus { border-color: var(--green-light); }
+    .calc-suffix { position: absolute; right: 12px; font-size: 11px; color: var(--text-muted); font-family: var(--mono); pointer-events: none; }
+
+    .calc-results-box { background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 1.1rem; margin-bottom: 1rem; }
+    .calc-res-item { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border-subtle); }
+    .calc-res-item:last-child { border-bottom: none; }
+    .calc-res-lbl { font-size: 12px; color: var(--text-secondary); }
+    .calc-res-val { font-family: var(--mono); font-size: 15px; font-weight: 600; color: var(--text-primary); }
+    .calc-res-val.highlight { color: var(--green-light); font-size: 19px; }
+    
+    .calc-targets-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 0.5rem; margin-bottom: 1rem; }
+    .calc-target-card { background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 8px; text-align: center; }
+    .calc-target-label { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px; }
+    .calc-target-val { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--green-light); }
+
+    /* Desglose Subcuentas */
+    .accounts-table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 12px; }
+    .accounts-table th { text-align: left; padding: 6px 8px; font-size: 10px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+    .accounts-table td { padding: 6px 8px; border-bottom: 1px solid var(--border-subtle); }
+    .accounts-table tr.highlight-jaime { background: rgba(0, 143, 76, 0.08); font-weight: 600; }
+    .accounts-table tr.highlight-jaime td { color: var(--green-light); }
+
+    .adr-banner { padding: 8px 12px; border-radius: 8px; font-size: 11px; margin-top: 6px; display: flex; align-items: center; gap: 8px; }
+    .adr-banner.optimal { background: var(--green-dim); color: var(--green-light); border: 1px solid rgba(0,143,76,0.3); }
+    .adr-banner.warning { background: var(--gold-dim); color: var(--gold); border: 1px solid rgba(245,166,35,0.3); }
 
     /* ─── STATS DASHBOARD ─── */
     .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; }
@@ -95,9 +127,8 @@
     .search-box svg { width: 15px; height: 15px; fill: var(--text-muted); flex-shrink: 0; }
     .search-input { background: transparent; border: none; color: var(--text-primary); font-size: 13px; font-family: var(--mono); outline: none; width: 170px; }
     .search-input::placeholder { color: var(--text-muted); font-family: var(--sans); }
-    .search-input:focus { color: var(--text-primary); }
 
-    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; font-size: 13px; transition: background 0.15s; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 9px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; font-size: 13px; transition: background 0.15s; }
     .btn-primary { background: var(--green); color: #FFFFFF; }
     .btn-primary:hover { background: var(--green-light); }
     .btn-ghost { background: transparent; color: var(--text-secondary); border: 1px solid var(--border); }
@@ -146,6 +177,11 @@
     .lightbox.open { opacity: 1; pointer-events: all; }
     .lightbox img { max-width: 90vw; max-height: 85vh; border-radius: 10px; border: 1px solid var(--border); }
     .lightbox-close { position: absolute; top: 1.5rem; right: 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); padding: 8px 15px; cursor: pointer; }
+
+    @media (max-width: 950px) {
+      .calc-container { grid-template-columns: 1fr; }
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -169,13 +205,180 @@
 <div class="container">
   
   <div class="tab-nav">
-    <button class="tab-btn active" id="btn-journal" onclick="switchTab('journal')">📖 Historial</button>
+    <button class="tab-btn active" id="btn-calc" onclick="switchTab('calc')">🎯 Cálculo de la posición</button>
+    <button class="tab-btn" id="btn-journal" onclick="switchTab('journal')">📖 Historial</button>
     <button class="tab-btn" id="btn-stats" onclick="switchTab('stats')">📊 Rendimiento</button>
     <button class="tab-btn" id="btn-calendar" onclick="switchTab('calendar')">📅 Calendario</button>
   </div>
 
+  <!-- PESTAÑA 0: CÁLCULO DE LA POSICIÓN -->
+  <div id="tab-calc" class="tab-content active">
+    <div class="calc-container">
+      
+      <!-- COLUMNA IZQUIERDA: VARIABLES EDITABLES -->
+      <div class="calc-card">
+        <div class="calc-title">
+          <span>⚙️ Variables de Entrada</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <select id="c-op-type" class="calc-input" style="padding:4px 8px; font-size:11px;" onchange="recalcPositionSize()">
+              <option value="TRADE">Trade (Day/Fast)</option>
+              <option value="SWING" selected>Swing Trading</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="calc-form-grid">
+          <div class="calc-group">
+            <label class="calc-label">Ticker</label>
+            <input type="text" id="c-ticker" class="calc-input" placeholder="Ej: FAST, CAKE" style="text-transform:uppercase;">
+          </div>
+          <div class="calc-group">
+            <label class="calc-label">Nombre Empresa</label>
+            <input type="text" id="c-company" class="calc-input" placeholder="Ej: Fastenal Co">
+          </div>
+
+          <div class="calc-group">
+            <label class="calc-label">Capital Total Cartera (€)</label>
+            <div class="calc-input-wrap">
+              <input type="number" id="c-cap-eur" class="calc-input" value="38400" step="100" oninput="onCalcCapitalEurChange()">
+              <span class="calc-suffix">EUR</span>
+            </div>
+          </div>
+          <div class="calc-group">
+            <label class="calc-label">Capital Total Cartera ($)</label>
+            <div class="calc-input-wrap">
+              <input type="number" id="c-cap-usd" class="calc-input" value="42810" step="100" oninput="onCalcCapitalUsdChange()">
+              <span class="calc-suffix">USD</span>
+            </div>
+          </div>
+
+          <div class="calc-group">
+            <label class="calc-label">Riesgo por Operación (%)</label>
+            <div class="calc-input-wrap">
+              <input type="number" id="c-risk-pct" class="calc-input" value="0.50" step="0.05" oninput="recalcPositionSize()">
+              <span class="calc-suffix">%</span>
+            </div>
+          </div>
+          <div class="calc-group">
+            <label class="calc-label">Riesgo Monetario (1R Total)</label>
+            <div class="calc-input-wrap">
+              <input type="text" id="c-risk-usd" class="calc-input" readonly style="opacity:0.8; background:var(--bg-secondary);">
+              <span class="calc-suffix">USD</span>
+            </div>
+          </div>
+
+          <div class="calc-group full">
+            <label class="calc-label">Precio de Compra / Entrada ($)</label>
+            <div class="calc-input-wrap">
+              <input type="number" id="c-entry" class="calc-input" placeholder="0.00" step="0.01" oninput="onCalcEntryChange()">
+              <span class="calc-suffix">USD</span>
+            </div>
+          </div>
+
+          <!-- STOP INVERSO BIDIRECCIONAL -->
+          <div class="calc-group">
+            <label class="calc-label">Precio Stop Loss ($)</label>
+            <div class="calc-input-wrap">
+              <input type="number" id="c-stop-price" class="calc-input" placeholder="0.00" step="0.01" oninput="onCalcStopPriceChange()">
+              <span class="calc-suffix">USD</span>
+            </div>
+          </div>
+          <div class="calc-group">
+            <label class="calc-label">% Stop Loss</label>
+            <div class="calc-input-wrap">
+              <input type="number" id="c-stop-pct" class="calc-input" placeholder="0.00" step="0.01" oninput="onCalcStopPctChange()">
+              <span class="calc-suffix">%</span>
+            </div>
+          </div>
+
+          <div class="calc-group full">
+            <label class="calc-label">ADR del Activo (% Opcional)</label>
+            <div class="calc-input-wrap">
+              <input type="number" id="c-adr" class="calc-input" placeholder="Ej: 2.79" step="0.01" oninput="recalcPositionSize()">
+              <span class="calc-suffix">%</span>
+            </div>
+            <div id="adr-banner" style="display:none;" class="adr-banner"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLUMNA DERECHA: RESULTADOS + SUB-CUENTAS + TARGETS -->
+      <div class="calc-card" style="display:flex; flex-direction:column; justify-content:space-between;">
+        <div>
+          <div class="calc-title">
+            <span>📊 Dimensionamiento Global IBKR</span>
+            <span class="badge badge-long" id="badge-total-shares">0 Acciones</span>
+          </div>
+
+          <div class="calc-results-box">
+            <div class="calc-res-item">
+              <span class="calc-res-lbl">Capital Compra Total ($):</span>
+              <span class="calc-res-val" id="res-capital-buy">$0.00</span>
+            </div>
+            <div class="calc-res-item">
+              <span class="calc-res-lbl">% Cartera Global:</span>
+              <span class="calc-res-val" id="res-portfolio-pct">0.00%</span>
+            </div>
+            <div class="calc-res-item">
+              <span class="calc-res-lbl">Distancia Stop por acción:</span>
+              <span class="calc-res-val" id="res-risk-per-share">$0.00</span>
+            </div>
+          </div>
+
+          <!-- DESGLOSE POR SUBCUENTA -->
+          <div style="font-size:11px; font-weight:600; text-transform:uppercase; color:var(--text-secondary); margin-bottom:4px;">
+            👥 Reparto Cartera Familiar
+          </div>
+          <div style="background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:8px; overflow:hidden; margin-bottom:1rem;">
+            <table class="accounts-table">
+              <thead>
+                <tr>
+                  <th>Cuenta</th>
+                  <th>Capital Base</th>
+                  <th>% Peso</th>
+                  <th>Acciones</th>
+                  <th>Importe ($)</th>
+                </tr>
+              </thead>
+              <tbody id="subaccountsTableBody"></tbody>
+            </table>
+          </div>
+
+          <!-- OBJETIVOS 1R, 2R, 3R -->
+          <div style="font-size:11px; font-weight:600; text-transform:uppercase; color:var(--text-secondary); margin-bottom:4px;">
+            🎯 Objetivos en R
+          </div>
+          <div class="calc-targets-grid">
+            <div class="calc-target-card">
+              <div class="calc-target-label">+1R</div>
+              <div class="calc-target-val" id="res-target-1r">—</div>
+            </div>
+            <div class="calc-target-card">
+              <div class="calc-target-label">+2R</div>
+              <div class="calc-target-val" id="res-target-2r">—</div>
+            </div>
+            <div class="calc-target-card">
+              <div class="calc-target-label">+3R</div>
+              <div class="calc-target-val" id="res-target-3r">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:1rem; display:flex; flex-direction:column; gap:8px;">
+          <button class="btn btn-primary" onclick="pasarCalculoAHistorial()" style="width:100%; padding:11px; font-size:13px;">
+            📥 Pasar Datos a Historial (Solo Jaime)
+          </button>
+          <button class="btn btn-ghost" onclick="copiarAlPortapapelesDiscord()" style="width:100%; padding:8px;">
+            📋 Copiar Resumen para Discord
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- PESTAÑA 1: HISTORIAL -->
-  <div id="tab-journal" class="tab-content active">
+  <div id="tab-journal" class="tab-content">
     <div class="section-header">
       <div style="display:flex; align-items:center; gap: 15px;">
         <h2 style="font-size: 16px; font-weight: 600;">Tus Operaciones</h2>
@@ -367,7 +570,6 @@
 </div>
 
 <script>
-// --- CONEXIÓN DIRECTA A SUPABASE ---
 const SUPABASE_URL = 'https://zxgsxjxlkcrtqjitlzzc.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp4Z3N4anhsa2NydHFqaXRsenpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEzMTU1MjYsImV4cCI6MjEwNjg5MTUyNn0.iJnppCJY0TChsrN3BNzfSahb807B7gw6v7WY90w_qog';
 const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -386,6 +588,17 @@ let computedTrades = [];
 let editingId = null;
 let currentImage = null;
 
+// Estructura fija de la cartera familiar
+const familyAccounts = [
+  { name: 'Jaime', eur: 21200 },
+  { name: 'Irene', eur: 6000 },
+  { name: 'Rosa',  eur: 5600 },
+  { name: 'Sara',  eur: 5600 }
+];
+
+let currentFxRate = 42810 / 38400; // Tasa implícita inicial EUR/USD (~1.1148)
+let computedJaimeShares = 0; // Guarda las acciones proporcionales de Jaime
+
 const calDate = new Date();
 let currentMonth = calDate.getMonth();
 let currentYear = calDate.getFullYear();
@@ -395,6 +608,7 @@ const fullMonthNames = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio"
 document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
   document.getElementById('currentDate').textContent = new Date().toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long' });
+  recalcPositionSize();
   await cargarDatosDeSupabase();
 });
 
@@ -427,6 +641,180 @@ function switchTab(tabId) {
   if (tabId === 'stats') { updateStats(); renderChart(); }
 }
 
+/* ─────────────────────────────────────────────────────────────
+   LÓGICA: CÁLCULO DE LA POSICIÓN (STOP INVERSO, ADR Y CARTERA)
+───────────────────────────────────────────────────────────── */
+function onCalcCapitalEurChange() {
+  const eur = parseFloat(document.getElementById('c-cap-eur').value) || 0;
+  const usd = eur * currentFxRate;
+  document.getElementById('c-cap-usd').value = Math.round(usd);
+  recalcPositionSize();
+}
+
+function onCalcCapitalUsdChange() {
+  const usd = parseFloat(document.getElementById('c-cap-usd').value) || 0;
+  const eur = parseFloat(document.getElementById('c-cap-eur').value) || 0;
+  if (eur > 0) currentFxRate = usd / eur;
+  recalcPositionSize();
+}
+
+function onCalcEntryChange() {
+  const entry = parseFloat(document.getElementById('c-entry').value) || 0;
+  const stopPct = parseFloat(document.getElementById('c-stop-pct').value) || 0;
+  if (entry > 0 && stopPct > 0) {
+    const stopPrice = entry * (1 - (stopPct / 100));
+    document.getElementById('c-stop-price').value = stopPrice.toFixed(2);
+  }
+  recalcPositionSize();
+}
+
+// Al cambiar el PRECIO del Stop -> actualiza automáticamente el %
+function onCalcStopPriceChange() {
+  const entry = parseFloat(document.getElementById('c-entry').value) || 0;
+  const stopPrice = parseFloat(document.getElementById('c-stop-price').value) || 0;
+  if (entry > 0 && stopPrice > 0) {
+    const stopPct = ((entry - stopPrice) / entry) * 100;
+    document.getElementById('c-stop-pct').value = stopPct > 0 ? stopPct.toFixed(2) : '0.00';
+  }
+  recalcPositionSize();
+}
+
+// Al cambiar el % del Stop -> actualiza automáticamente el PRECIO
+function onCalcStopPctChange() {
+  const entry = parseFloat(document.getElementById('c-entry').value) || 0;
+  const stopPct = parseFloat(document.getElementById('c-stop-pct').value) || 0;
+  if (entry > 0) {
+    const stopPrice = entry * (1 - (stopPct / 100));
+    document.getElementById('c-stop-price').value = stopPrice > 0 ? stopPrice.toFixed(2) : '0.00';
+  }
+  recalcPositionSize();
+}
+
+function recalcPositionSize() {
+  const capUsd = parseFloat(document.getElementById('c-cap-usd').value) || 0;
+  const riskPct = parseFloat(document.getElementById('c-risk-pct').value) || 0;
+  const entry = parseFloat(document.getElementById('c-entry').value) || 0;
+  const stopPrice = parseFloat(document.getElementById('c-stop-price').value) || 0;
+  const stopPct = parseFloat(document.getElementById('c-stop-pct').value) || 0;
+  const adr = parseFloat(document.getElementById('c-adr').value) || 0;
+  const opType = document.getElementById('c-op-type').value;
+
+  // 1R Monetario Global
+  const r1Usd = capUsd * (riskPct / 100);
+  document.getElementById('c-risk-usd').value = `$${fmt(r1Usd)}`;
+
+  const riskPerShare = entry - stopPrice;
+  let totalShares = 0;
+
+  if (entry > 0 && stopPrice > 0 && riskPerShare > 0 && r1Usd > 0) {
+    totalShares = Math.floor(r1Usd / riskPerShare);
+    const capitalBuy = totalShares * entry;
+    const portfolioPct = capUsd > 0 ? (capitalBuy / capUsd) * 100 : 0;
+
+    document.getElementById('badge-total-shares').textContent = `${totalShares} Acciones`;
+    document.getElementById('res-capital-buy').textContent = `$${fmt(capitalBuy)}`;
+    document.getElementById('res-portfolio-pct').textContent = `${fmt(portfolioPct)}%`;
+    document.getElementById('res-risk-per-share').textContent = `$${fmt(riskPerShare)}`;
+
+    // Targets en R
+    document.getElementById('res-target-1r').textContent = `$${fmtPrice(entry + (1 * riskPerShare))}`;
+    document.getElementById('res-target-2r').textContent = `$${fmtPrice(entry + (2 * riskPerShare))}`;
+    document.getElementById('res-target-3r').textContent = `$${fmtPrice(entry + (3 * riskPerShare))}`;
+  } else {
+    document.getElementById('badge-total-shares').textContent = `0 Acciones`;
+    document.getElementById('res-capital-buy').textContent = `$0.00`;
+    document.getElementById('res-portfolio-pct').textContent = `0.00%`;
+    document.getElementById('res-risk-per-share').textContent = `$0.00`;
+    document.getElementById('res-target-1r').textContent = `—`;
+    document.getElementById('res-target-2r').textContent = `—`;
+    document.getElementById('res-target-3r').textContent = `—`;
+  }
+
+  // Reparto Cartera Familiar
+  const tbody = document.getElementById('subaccountsTableBody');
+  const totalBaseEur = familyAccounts.reduce((acc, a) => acc + a.eur, 0);
+
+  tbody.innerHTML = familyAccounts.map(acc => {
+    const weight = acc.eur / totalBaseEur;
+    const accShares = Math.floor(totalShares * weight);
+    const accImporte = accShares * entry;
+    const isJaime = acc.name === 'Jaime';
+    if (isJaime) computedJaimeShares = accShares;
+
+    return `<tr class="${isJaime ? 'highlight-jaime' : ''}">
+      <td><strong>${acc.name}</strong> ${isJaime ? '(Tú)' : ''}</td>
+      <td class="cell-mono">${fmt(acc.eur)} €</td>
+      <td class="cell-mono">${fmt(weight * 100)}%</td>
+      <td class="cell-mono"><strong>${accShares}</strong></td>
+      <td class="cell-mono">$${fmt(accImporte)}</td>
+    </tr>`;
+  }).join('');
+
+  // Validación Técnica ADR
+  const adrBanner = document.getElementById('adr-banner');
+  if (adr > 0 && stopPct > 0) {
+    adrBanner.style.display = 'flex';
+    if (opType === 'TRADE') {
+      const threshold = 0.5 * adr;
+      if (stopPct < threshold) {
+        adrBanner.className = 'adr-banner warning';
+        adrBanner.innerHTML = `⚠️ <strong>Stop muy ceñido (${stopPct.toFixed(2)}% vs 0.5×ADR: ${threshold.toFixed(2)}%)</strong>: Riesgo de barrido por ruido intrassesión.`;
+      } else {
+        adrBanner.className = 'adr-banner optimal';
+        adrBanner.innerHTML = `✅ <strong>Stop óptimo para Trade</strong> (${stopPct.toFixed(2)}% supera el mínimo de 0.5×ADR: ${threshold.toFixed(2)}%).`;
+      }
+    } else {
+      const threshold = 1.5 * adr;
+      if (stopPct > threshold) {
+        adrBanner.className = 'adr-banner warning';
+        adrBanner.innerHTML = `⚠️ <strong>Stop amplio (${stopPct.toFixed(2)}% vs 1.5×ADR: ${threshold.toFixed(2)}%)</strong>: Considera reducir riesgo o afinar entrada.`;
+      } else {
+        adrBanner.className = 'adr-banner optimal';
+        adrBanner.innerHTML = `✅ <strong>Stop calibrado para Swing</strong> (${stopPct.toFixed(2)}% dentro del margen de 1.5×ADR: ${threshold.toFixed(2)}%).`;
+      }
+    }
+  } else {
+    adrBanner.style.display = 'none';
+  }
+}
+
+function pasarCalculoAHistorial() {
+  const ticker = (document.getElementById('c-ticker').value || '').toUpperCase().trim();
+  const entry = document.getElementById('c-entry').value;
+  const stop = document.getElementById('c-stop-price').value;
+  const shares = computedJaimeShares;
+
+  switchTab('journal');
+  openAddModal();
+
+  if (ticker) document.getElementById('f-symbol').value = ticker;
+  if (entry) document.getElementById('f-entry').value = entry;
+  if (stop) document.getElementById('f-stop').value = stop;
+  if (shares && shares > 0) document.getElementById('f-shares').value = shares;
+}
+
+function copiarAlPortapapelesDiscord() {
+  const ticker = (document.getElementById('c-ticker').value || 'TICKER').toUpperCase().trim();
+  const company = document.getElementById('c-company').value.trim();
+  const entry = document.getElementById('c-entry').value;
+  const stop = document.getElementById('c-stop-price').value;
+  const stopPct = document.getElementById('c-stop-pct').value;
+  const riskPct = document.getElementById('c-risk-pct').value;
+  const opType = document.getElementById('c-op-type').value;
+
+  const text = `**[${opType}]** $${ticker}${company ? ` (${company})` : ''}
+• Entrada: $${entry || '—'}
+• Stop Loss: $${stop || '—'} (${stopPct || '—'}%)
+• Riesgo asumido: ${riskPct}% (1R)`;
+
+  navigator.clipboard.writeText(text).then(() => {
+    alert('¡Ficha copiada al portapapeles para Discord!');
+  });
+}
+
+/* ─────────────────────────────────────────────────────────────
+   REFRESH Y OPERATIVA DEL HISTORIAL
+───────────────────────────────────────────────────────────── */
 function refreshApp() {
   let running = initialCapital;
   let chronoTrades = [...trades].sort((a,b) => new Date(a.date) - new Date(b.date));
@@ -440,8 +828,8 @@ function refreshApp() {
 
   updateSetupOptions();
   renderTable();
-  if(document.getElementById('tab-stats').classList.contains('active')){ updateStats(); renderChart(); }
-  if(document.getElementById('tab-calendar').classList.contains('active')) renderCalendar();
+  if (document.getElementById('tab-stats').classList.contains('active')) { updateStats(); renderChart(); }
+  if (document.getElementById('tab-calendar').classList.contains('active')) renderCalendar();
 }
 
 function updateSetupOptions() {
@@ -458,9 +846,7 @@ function autoCalcularPnL() {
   const exit = parseFloat(document.getElementById('f-exit').value);
   const shares = parseFloat(document.getElementById('f-shares').value);
 
-  if (isNaN(entry) || isNaN(exit) || isNaN(shares) || shares <= 0) {
-    return;
-  }
+  if (isNaN(entry) || isNaN(exit) || isNaN(shares) || shares <= 0) return;
 
   let pnl = 0;
   if (dir === 'LONG') {
