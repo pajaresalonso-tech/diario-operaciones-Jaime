@@ -89,12 +89,10 @@
     .calc-input:focus, .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--green-light); }
     .calc-suffix { position: absolute; right: 12px; font-size: 11px; color: var(--text-muted); font-family: var(--mono); pointer-events: none; }
 
-    /* Tarjeta Hero de Acciones Totales */
     .hero-shares-box { background: linear-gradient(145deg, rgba(0, 143, 76, 0.16), var(--bg-secondary)); border: 2px solid var(--green); border-radius: 12px; padding: 1.1rem; text-align: center; margin-bottom: 0.85rem; box-shadow: 0 4px 14px rgba(0,143,76,0.15); }
     .hero-shares-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--green-light); margin-bottom: 4px; }
     .hero-shares-num { font-family: var(--mono); font-size: 36px; font-weight: 800; color: #FFFFFF; line-height: 1.1; letter-spacing: -0.5px; }
 
-    /* Panel Métricas Destacadas Jaime y Total */
     .metric-spotlight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 0.85rem; }
     .metric-spotlight-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; }
     .metric-spotlight-lbl { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 3px; }
@@ -107,7 +105,6 @@
     .calc-res-lbl { font-size: 12px; color: var(--text-secondary); }
     .calc-res-val { font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--text-primary); }
 
-    /* Targets con tipografía grande */
     .calc-targets-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 0.5rem; margin-bottom: 1rem; }
     .calc-target-card { background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 10px 6px; text-align: center; }
     .calc-target-label { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
@@ -889,32 +886,28 @@ function recalcPositionSize() {
     }
   });
 
-  // Cálculo revisado y riguroso de ADR para TRADE vs SWING
+  // Validación Técnica ADR Estricta (0.5 para TRADE / 1.5 para SWING)
   const adrBanner = document.getElementById('adr-banner');
   if (adr > 0 && stopPct > 0) {
     adrBanner.style.display = 'flex';
     if (currentOpType === 'TRADE') {
-      const minThreshold = 0.5 * adr;
-      const maxThreshold = 1.0 * adr;
-      
-      if (stopPct < minThreshold) {
+      const targetTrade = 0.5 * adr;
+      if (stopPct < targetTrade) {
         adrBanner.className = 'adr-banner warning';
-        adrBanner.innerHTML = `⚠️ <strong>Stop excesivamente ceñido (${fmt(stopPct)}% < 0.5×ADR: ${fmt(minThreshold)}%)</strong>: Alto riesgo de ejecución por ruido normal de sesión.`;
-      } else if (stopPct > maxThreshold) {
-        adrBanner.className = 'adr-banner warning';
-        adrBanner.innerHTML = `⚠️ <strong>Stop amplio para Trade (${fmt(stopPct)}% > 1.0×ADR: ${fmt(maxThreshold)}%)</strong>: Excede la volatilidad de 1 día; considera operar en modo Swing.`;
+        adrBanner.innerHTML = `⚠️ <strong>Stop ceñido (${fmt(stopPct)}% < 0,5×ADR: ${fmt(targetTrade)}%)</strong>: Riesgo de barrido por ruido de sesión.`;
       } else {
         adrBanner.className = 'adr-banner optimal';
-        adrBanner.innerHTML = `✅ <strong>Stop calibrado para Trade</strong> (${fmt(stopPct)}% entre 0.5× y 1.0×ADR: margen técnico seguro frente al ruido).`;
+        adrBanner.innerHTML = `✅ <strong>Stop válido para Trade</strong> (${fmt(stopPct)}% ≥ 0,5×ADR: ${fmt(targetTrade)}%).`;
       }
     } else {
-      const swingMax = 1.5 * adr;
-      if (stopPct > swingMax) {
+      // SWING
+      const targetSwing = 1.5 * adr;
+      if (stopPct > targetSwing) {
         adrBanner.className = 'adr-banner warning';
-        adrBanner.innerHTML = `⚠️ <strong>Stop holgado para Swing (${fmt(stopPct)}% > 1.5×ADR: ${fmt(swingMax)}%)</strong>: Riesgo de asumir pérdida excesiva; afina la entrada.`;
+        adrBanner.innerHTML = `⚠️ <strong>Stop amplio (${fmt(stopPct)}% > 1,5×ADR: ${fmt(targetSwing)}%)</strong>: Excede el margen recomendado de 1,5×ADR.`;
       } else {
         adrBanner.className = 'adr-banner optimal';
-        adrBanner.innerHTML = `✅ <strong>Stop óptimo para Swing</strong> (${fmt(stopPct)}% dentro del límite de 1.5×ADR: ${fmt(swingMax)}%).`;
+        adrBanner.innerHTML = `✅ <strong>Stop válido para Swing</strong> (${fmt(stopPct)}% ≤ 1,5×ADR: ${fmt(targetSwing)}%).`;
       }
     }
   } else {
@@ -1303,9 +1296,7 @@ async function deleteTrade(id) {
   }
 }
 
-/* ─────────────────────────────────────────────────────────────
-   CURVA DE EQUIDAD CON FECHAS EN EL EJE X
-───────────────────────────────────────────────────────────── */
+/* ─── CURVA DE EQUIDAD CON FECHAS EN EL EJE X ─── */
 function renderChart() {
   const canvas = document.getElementById('equityChart');
   const ctx = canvas.getContext('2d');
@@ -1364,7 +1355,6 @@ function renderChart() {
     const x = px(i);
     ctx.fillText(dates[i], x, H - 10);
 
-    // Pequeño marcador de cuadrícula
     ctx.beginPath();
     ctx.moveTo(x, pdTop + ch);
     ctx.lineTo(x, pdTop + ch + 4);
@@ -1372,7 +1362,6 @@ function renderChart() {
     ctx.stroke();
   }
 
-  // Asegurar última fecha visible
   if ((dates.length - 1) % step !== 0) {
     const lastX = px(dates.length - 1);
     ctx.fillText(dates[dates.length - 1], lastX, H - 10);
