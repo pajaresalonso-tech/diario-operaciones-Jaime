@@ -559,7 +559,6 @@
     </div>
     <div class="modal-body">
       <div class="form-grid">
-        <!-- Campo Fecha Destacado -->
         <div class="form-group highlighted-field">
           <label class="form-label">Fecha <span class="req-tag">* Requerido</span></label>
           <input type="date" class="form-input" id="f-date">
@@ -578,7 +577,6 @@
           </select>
         </div>
 
-        <!-- Campo Patrón/Setup Destacado -->
         <div class="form-group full highlighted-field">
           <label class="form-label">Patrón / Setup <span class="req-tag">* Requerido</span></label>
           <input type="text" class="form-input" id="f-setup" list="setup-list" placeholder="Elige o escribe el patrón...">
@@ -886,28 +884,29 @@ function recalcPositionSize() {
     }
   });
 
-  // Validación Técnica ADR Estricta (0.5 para TRADE / 1.5 para SWING)
+  // Validación Técnica ADR Estricta (SL no puede superar el límite)
   const adrBanner = document.getElementById('adr-banner');
   if (adr > 0 && stopPct > 0) {
     adrBanner.style.display = 'flex';
+    
     if (currentOpType === 'TRADE') {
-      const targetTrade = 0.5 * adr;
-      if (stopPct < targetTrade) {
+      const maxAllowedTrade = 0.5 * adr;
+      if (stopPct > maxAllowedTrade) {
         adrBanner.className = 'adr-banner warning';
-        adrBanner.innerHTML = `⚠️ <strong>Stop ceñido (${fmt(stopPct)}% < 0,5×ADR: ${fmt(targetTrade)}%)</strong>: Riesgo de barrido por ruido de sesión.`;
+        adrBanner.innerHTML = `⚠️ <strong>Stop excesivo para Trade (${fmt(stopPct)}% > 0,5×ADR: ${fmt(maxAllowedTrade)}%)</strong>: El SL no puede superar 0,5×ADR.`;
       } else {
         adrBanner.className = 'adr-banner optimal';
-        adrBanner.innerHTML = `✅ <strong>Stop válido para Trade</strong> (${fmt(stopPct)}% ≥ 0,5×ADR: ${fmt(targetTrade)}%).`;
+        adrBanner.innerHTML = `✅ <strong>Stop válido para Trade</strong> (${fmt(stopPct)}% ≤ 0,5×ADR: ${fmt(maxAllowedTrade)}%).`;
       }
     } else {
       // SWING
-      const targetSwing = 1.5 * adr;
-      if (stopPct > targetSwing) {
+      const maxAllowedSwing = 1.5 * adr;
+      if (stopPct > maxAllowedSwing) {
         adrBanner.className = 'adr-banner warning';
-        adrBanner.innerHTML = `⚠️ <strong>Stop amplio (${fmt(stopPct)}% > 1,5×ADR: ${fmt(targetSwing)}%)</strong>: Excede el margen recomendado de 1,5×ADR.`;
+        adrBanner.innerHTML = `⚠️ <strong>Stop excesivo para Swing (${fmt(stopPct)}% > 1,5×ADR: ${fmt(maxAllowedSwing)}%)</strong>: El SL no puede superar 1,5×ADR.`;
       } else {
         adrBanner.className = 'adr-banner optimal';
-        adrBanner.innerHTML = `✅ <strong>Stop válido para Swing</strong> (${fmt(stopPct)}% ≤ 1,5×ADR: ${fmt(targetSwing)}%).`;
+        adrBanner.innerHTML = `✅ <strong>Stop válido para Swing</strong> (${fmt(stopPct)}% ≤ 1,5×ADR: ${fmt(maxAllowedSwing)}%).`;
       }
     }
   } else {
@@ -1323,7 +1322,6 @@ function renderChart() {
   const px = i => pdX + (i / (points.length - 1)) * cw;
   const py = v => pdTop + ch - ((v - min) / range) * ch;
 
-  // Fondo degradado
   const grad = ctx.createLinearGradient(0, 0, 0, H);
   const isPositive = points[points.length - 1] >= initialCapital;
   grad.addColorStop(0, isPositive ? 'rgba(0,143,76,0.25)' : 'rgba(255,71,87,0.2)');
@@ -1337,7 +1335,6 @@ function renderChart() {
   ctx.fillStyle = grad;
   ctx.fill();
 
-  // Línea de equidad
   ctx.beginPath();
   ctx.moveTo(px(0), py(points[0]));
   points.forEach((v, i) => i > 0 && ctx.lineTo(px(i), py(v)));
@@ -1345,7 +1342,6 @@ function renderChart() {
   ctx.lineWidth = 2.5; 
   ctx.stroke();
 
-  // Eje X y Fechas
   ctx.fillStyle = '#8B949E';
   ctx.font = '10px "JetBrains Mono", monospace';
   ctx.textAlign = 'center';
