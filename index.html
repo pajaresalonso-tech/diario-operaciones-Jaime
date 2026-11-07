@@ -1,37 +1,39 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <!-- Favicon pestaña del navegador (Vela japonesa + línea alcista) -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230D1117'/><line x1='12' y1='5' x2='12' y2='27' stroke='%2300D4AA' stroke-width='1.5' stroke-linecap='round'/><rect x='9.5' y='10' width='5' height='12' rx='1' fill='%2300D4AA'/><line x1='22' y1='7' x2='22' y2='25' stroke='%2330363D' stroke-width='1.5' stroke-linecap='round'/><rect x='19.5' y='13' width='5' height='8' rx='1' fill='%2330363D'/><path d='M4 22L14 15L20 18L28 8' fill='none' stroke='%2300D4AA' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/><polygon points='28,5 28,11 23,8' fill='%2300D4AA'/></svg>">
+  <!-- Favicon pestaña del navegador (Logo TLR) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000'><rect width='1000' height='1000' rx='220' fill='%230D1117'/><path d='M654 186 H300 C217 186 150 253 150 336 V700 C150 783 217 850 300 850 H700 C783 850 850 783 850 700 V358' fill='none' stroke='%23008F4C' stroke-width='44' stroke-linecap='round'/><path d='M195 775 L350 470 L462 700 L538 320 L610 500 L745 270' fill='none' stroke='%23008F4C' stroke-width='42' stroke-linecap='round' stroke-linejoin='miter'/><polygon points='814,186 654,186 654,342 708,288 760,340 814,286 760,234' fill='%23008F4C'/></svg>">
 
   <!-- Icono para pantalla de inicio del iPhone -->
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%230D1117'/><line x1='68' y1='28' x2='68' y2='152' stroke='%2300D4AA' stroke-width='6' stroke-linecap='round'/><rect x='54' y='55' width='28' height='68' rx='4' fill='%2300D4AA'/><line x1='124' y1='40' x2='124' y2='140' stroke='%2330363D' stroke-width='6' stroke-linecap='round'/><rect x='110' y='72' width='28' height='45' rx='4' fill='%2330363D'/><path d='M25 125L80 85L115 102L160 45' fill='none' stroke='%2300D4AA' stroke-width='10' stroke-linecap='round' stroke-linejoin='round'/><polygon points='162,28 162,62 135,46' fill='%2300D4AA'/></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000'><rect width='1000' height='1000' rx='220' fill='%230D1117'/><path d='M654 186 H300 C217 186 150 253 150 336 V700 C150 783 217 850 300 850 H700 C783 850 850 783 850 700 V358' fill='none' stroke='%23008F4C' stroke-width='44' stroke-linecap='round'/><path d='M195 775 L350 470 L462 700 L538 320 L610 500 L745 270' fill='none' stroke='%23008F4C' stroke-width='42' stroke-linecap='round' stroke-linejoin='miter'/><polygon points='814,186 654,186 654,342 708,288 760,340 814,286 760,234' fill='%23008F4C'/></svg>">
+  
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TradeLog — Journal del Trader</title>
+  <title>TradeLog — The Long Run</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <!-- SDK de Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --bg-primary: #0D1117;
-      --bg-secondary: #161B22;
-      --bg-card: #1C2333;
-      --bg-hover: #21293B;
-      --border: #30363D;
-      --border-subtle: #1E2634;
-      --green: #00D4AA;
-      --green-dim: rgba(0,212,170,0.12);
+      --bg-primary: #0B0E14;
+      --bg-secondary: #121720;
+      --bg-card: #18202C;
+      --bg-hover: #1E2838;
+      --border: #263345;
+      --border-subtle: #1B2432;
+      --green: #008F4C;
+      --green-light: #00B35F;
+      --green-dim: rgba(0, 143, 76, 0.15);
       --red: #FF4757;
-      --red-dim: rgba(255,71,87,0.12);
+      --red-dim: rgba(255, 71, 87, 0.12);
       --gold: #F5A623;
-      --gold-dim: rgba(245,166,35,0.12);
+      --gold-dim: rgba(245, 166, 35, 0.12);
       --blue: #58A6FF;
-      --blue-dim: rgba(88,166,255,0.1);
+      --blue-dim: rgba(88, 166, 255, 0.1);
       --text-primary: #E6EDF3;
       --text-secondary: #8B949E;
-      --text-muted: #484F58;
+      --text-muted: #57606A;
       --mono: 'JetBrains Mono', monospace;
       --sans: 'Space Grotesk', sans-serif;
     }
@@ -40,12 +42,12 @@
     body { background: var(--bg-primary); color: var(--text-primary); font-family: var(--sans); min-height: 100vh; font-size: 14px; line-height: 1.5; }
 
     /* ─── HEADER ─── */
-    .header { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
-    .logo { display: flex; align-items: center; gap: 10px; }
-    .logo-mark { width: 32px; height: 32px; background: var(--green); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-    .logo-mark svg { width: 18px; height: 18px; fill: var(--bg-primary); }
-    .logo-text { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; color: var(--text-primary); }
-    .logo-text span { color: var(--green); }
+    .header { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 62px; position: sticky; top: 0; z-index: 100; }
+    .logo { display: flex; align-items: center; gap: 12px; }
+    .logo-mark { width: 34px; height: 34px; background: transparent; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .logo-mark svg { width: 34px; height: 34px; }
+    .logo-text { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; color: var(--text-primary); }
+    .logo-text span { color: var(--green-light); }
     .header-meta { font-family: var(--mono); font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 16px; }
 
     /* ─── NAVIGATION TABS ─── */
@@ -53,7 +55,7 @@
     .tab-nav { display: flex; gap: 15px; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
     .tab-btn { background: transparent; color: var(--text-muted); border: none; font-size: 14px; font-weight: 600; cursor: pointer; padding: 10px 20px; border-radius: 8px; transition: all 0.2s; }
     .tab-btn:hover { color: var(--text-primary); background: var(--bg-hover); }
-    .tab-btn.active { background: var(--bg-hover); color: var(--text-primary); border-bottom: 2px solid var(--green); border-radius: 8px 8px 0 0; }
+    .tab-btn.active { background: var(--bg-hover); color: var(--text-primary); border-bottom: 2px solid var(--green-light); border-radius: 8px 8px 0 0; }
     .tab-content { display: none; animation: fadeIn 0.3s; }
     .tab-content.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
@@ -65,7 +67,7 @@
     .stat-card:hover { background: var(--bg-hover); }
     .stat-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 10px; }
     .stat-value { font-family: var(--mono); font-size: 24px; font-weight: 600; letter-spacing: -0.5px; line-height: 1.2; }
-    .stat-value.positive { color: var(--green); }
+    .stat-value.positive { color: var(--green-light); }
     .stat-value.negative { color: var(--red); }
     .stat-value.neutral { color: var(--text-primary); }
     .stat-sub { font-size: 12px; color: var(--text-secondary); margin-top: 5px; font-family: var(--sans); }
@@ -84,14 +86,16 @@
     .cal-day.empty { background: transparent; border-color: transparent; }
     .cal-day-num { font-size: 12px; color: var(--text-muted); font-weight: 500; }
     .cal-day-pnl { font-family: var(--mono); font-size: 14px; font-weight: 600; text-align: right; margin-top: auto; }
-    .cal-day.win { border-color: rgba(0,212,170,0.3); background: var(--green-dim); color: var(--green); }
+    .cal-day.win { border-color: rgba(0,143,76,0.35); background: var(--green-dim); color: var(--green-light); }
     .cal-day.loss { border-color: rgba(255,71,87,0.3); background: var(--red-dim); color: var(--red); }
 
     /* ─── BUTTONS & UTILS ─── */
     .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
-    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 8px 16px; border-radius: 8px; font-weight: 500; cursor: pointer; border: none; }
-    .btn-primary { background: var(--green); color: var(--bg-primary); }
+    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; font-size: 13px; transition: background 0.15s; }
+    .btn-primary { background: var(--green); color: #FFFFFF; }
+    .btn-primary:hover { background: var(--green-light); }
     .btn-ghost { background: transparent; color: var(--text-secondary); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: var(--bg-hover); color: var(--text-primary); }
     canvas#equityChart { width: 100% !important; height: 300px !important; margin-top: 20px; }
 
     /* ─── TABLE ─── */
@@ -105,7 +109,7 @@
     .cell-symbol { font-family: var(--mono); font-weight: 600; font-size: 13px; color: var(--blue); }
     
     .badge { display: inline-flex; padding: 3px 8px; border-radius: 5px; font-family: var(--mono); font-size: 11px; font-weight: 500; }
-    .badge-long { background: var(--green-dim); color: var(--green); }
+    .badge-long { background: var(--green-dim); color: var(--green-light); }
     .badge-short { background: var(--red-dim); color: var(--red); }
     .tag-pill { display: inline-flex; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-family: var(--mono); background: var(--blue-dim); color: var(--blue); }
     .thumb-btn { width: 34px; height: 26px; border-radius: 5px; border: 1px dashed var(--border); background: transparent; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; overflow: hidden; }
@@ -124,7 +128,7 @@
     .form-group.full { grid-column: 1 / -1; }
     .form-label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); }
     .form-input, .form-select, .form-textarea { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; padding: 10px; color: var(--text-primary); font-size: 13px; outline: none; }
-    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--green); }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--green-light); }
     .form-textarea { resize: vertical; min-height: 70px; }
     
     .upload-zone { border: 2px dashed var(--border); border-radius: 10px; padding: 1.5rem; text-align: center; cursor: pointer; background: var(--bg-secondary); position: relative; }
@@ -142,7 +146,14 @@
 
 <header class="header">
   <div class="logo">
-    <div class="logo-mark"><svg viewBox="0 0 24 24"><path d="M3 17l4-8 4 4 4-6 4 10H3z"/></svg></div>
+    <div class="logo-mark">
+      <!-- Icono The Long Run -->
+      <svg viewBox="0 0 1000 1000">
+        <path d="M654 186 H300 C217 186 150 253 150 336 V700 C150 783 217 850 300 850 H700 C783 850 850 783 850 700 V358" fill="none" stroke="#008F4C" stroke-width="48" stroke-linecap="round"/>
+        <path d="M195 775 L350 470 L462 700 L538 320 L610 500 L745 270" fill="none" stroke="#FFFFFF" stroke-width="44" stroke-linecap="round" stroke-linejoin="miter"/>
+        <polygon points="814,186 654,186 654,342 708,288 760,340 814,286 760,234" fill="#FFFFFF"/>
+      </svg>
+    </div>
     <span class="logo-text">Trade<span>Log</span></span>
   </div>
   <div class="header-meta">
@@ -162,7 +173,7 @@
   <div id="tab-journal" class="tab-content active">
     <div class="section-header">
       <h2 style="font-size: 16px; font-weight: 600;">Tus Operaciones</h2>
-      <button class="btn btn-primary" onclick="openAddModal()">+ Nuevo Trade</button>
+      <button class="btn btn-primary" onclick="openAddModal()">+ Nueva Operación</button>
     </div>
     <div class="table-wrapper">
       <table class="trade-table">
@@ -266,7 +277,7 @@
 
 </div>
 
-<!-- ─── MODAL DE REGISTRO ─── -->
+<!-- MODAL REGISTRO -->
 <div class="modal-overlay" id="addModal" onclick="closeModalIfOverlay(event)">
   <div class="modal">
     <div class="modal-header">
@@ -334,7 +345,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeAddModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveTrade()">Guardar Trade</button>
+      <button class="btn btn-primary" onclick="saveTrade()">Guardar Operación</button>
     </div>
   </div>
 </div>
@@ -492,8 +503,8 @@ function renderTable() {
       <td class="cell-mono">${fmtPrice(t.entry)}</td>
       <td class="cell-mono">${fmtPrice(t.stop)}</td>
       <td class="cell-mono">${fmtPrice(t.exit)}</td>
-      <td class="cell-mono" style="color: var(--${rClass === 'positive' ? 'green' : (rClass === 'negative' ? 'red' : 'text-primary')})"><strong>${rText}</strong></td>
-      <td class="cell-mono" style="color: var(--${pnl >= 0 ? 'green' : 'red'})">${pnlText}</td>
+      <td class="cell-mono" style="color: var(--${rClass === 'positive' ? 'green-light' : (rClass === 'negative' ? 'red' : 'text-primary')})"><strong>${rText}</strong></td>
+      <td class="cell-mono" style="color: var(--${pnl >= 0 ? 'green-light' : 'red'})">${pnlText}</td>
       <td>${chartBtn}</td>
       <td>
         <button class="action-btn" onclick="openEditModal('${t.id}')" title="Editar">✏️</button>
@@ -595,8 +606,8 @@ function updateStats() {
       
       return `<tr>
         <td><strong>${monthNames[data.month]} ${data.year}</strong></td>
-        <td class="cell-mono" style="color:var(--${cls === 'positive' ? 'green' : 'red'})">${prefix}$${fmt(Math.abs(pnlUSD))}</td>
-        <td class="cell-mono" style="color:var(--${cls === 'positive' ? 'green' : 'red'})">${prefix}${fmt(pctRentabilidad)}%</td>
+        <td class="cell-mono" style="color:var(--${cls === 'positive' ? 'green-light' : 'red'})">${prefix}$${fmt(Math.abs(pnlUSD))}</td>
+        <td class="cell-mono" style="color:var(--${cls === 'positive' ? 'green-light' : 'red'})">${prefix}${fmt(pctRentabilidad)}%</td>
       </tr>`;
     }).join('');
   }
@@ -745,20 +756,8 @@ async function saveTrade() {
     trades[idx] = { ...trades[idx], ...data };
   } else {
     const { data: inserted, error } = await db.from('tradelog_trades').insert([data]).select();
-    if (error) { 
-      // Si falla porque no existe la columna 'shares' en tu Supabase, guardamos sin ella
-      if (error.message && error.message.includes('shares')) {
-        delete data.shares;
-        const fallback = await db.from('tradelog_trades').insert([data]).select();
-        if (fallback.error) { alert('Error al guardar: ' + fallback.error.message); return; }
-        trades.push(fallback.data && fallback.data[0] ? fallback.data[0] : { id: Date.now(), ...data });
-      } else {
-        alert('Error al guardar: ' + error.message); 
-        return; 
-      }
-    } else {
-      trades.push(inserted && inserted[0] ? inserted[0] : { id: Date.now(), ...data });
-    }
+    if (error) { alert('Error al guardar: ' + error.message); return; }
+    trades.push(inserted && inserted[0] ? inserted[0] : { id: Date.now(), ...data });
   }
 
   refreshApp();
@@ -795,7 +794,7 @@ function renderChart() {
 
   const grad = ctx.createLinearGradient(0, 0, 0, H);
   const isPositive = points[points.length-1] >= initialCapital;
-  grad.addColorStop(0, isPositive ? 'rgba(0,212,170,0.2)' : 'rgba(255,71,87,0.2)');
+  grad.addColorStop(0, isPositive ? 'rgba(0,143,76,0.25)' : 'rgba(255,71,87,0.2)');
   grad.addColorStop(1, 'rgba(0,0,0,0)');
 
   ctx.beginPath();
@@ -809,7 +808,7 @@ function renderChart() {
   ctx.beginPath();
   ctx.moveTo(px(0), py(points[0]));
   points.forEach((v, i) => i > 0 && ctx.lineTo(px(i), py(v)));
-  ctx.strokeStyle = isPositive ? '#00D4AA' : '#FF4757';
+  ctx.strokeStyle = isPositive ? '#00B35F' : '#FF4757';
   ctx.lineWidth = 3; 
   ctx.stroke();
 }
