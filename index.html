@@ -5,7 +5,9 @@
   <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000'><rect width='1000' height='1000' rx='220' fill='%230D1117'/><path d='M654 186 H300 C217 186 150 253 150 336 V700 C150 783 217 850 300 850 H700 C783 850 850 783 850 700 V358' fill='none' stroke='%23008F4C' stroke-width='44' stroke-linecap='round'/><path d='M195 775 L350 470 L462 700 L538 320 L610 500 L745 270' fill='none' stroke='%23008F4C' stroke-width='42' stroke-linecap='round' stroke-linejoin='miter'/><polygon points='814,186 654,186 654,342 708,288 760,340 814,286 760,234' fill='%23008F4C'/></svg>">
   
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>TradeLog — The Long Run</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -34,153 +36,178 @@
       --sans: 'Space Grotesk', sans-serif;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body { background: var(--bg-primary); color: var(--text-primary); font-family: var(--sans); min-height: 100vh; font-size: 14px; line-height: 1.5; }
 
     /* ─── HEADER ─── */
-    .header { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 62px; position: sticky; top: 0; z-index: 100; }
-    .logo { display: flex; align-items: center; gap: 12px; }
-    .logo-mark { width: 34px; height: 34px; background: transparent; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-    .logo-mark svg { width: 34px; height: 34px; }
-    .logo-text { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; color: var(--text-primary); }
+    .header { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-mark { width: 32px; height: 32px; background: transparent; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .logo-mark svg { width: 32px; height: 32px; }
+    .logo-text { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; color: var(--text-primary); }
     .logo-text span { color: var(--green-light); }
-    .header-meta { font-family: var(--mono); font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 16px; }
+    .header-meta { font-family: var(--mono); font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 12px; }
 
     /* ─── NAVIGATION TABS ─── */
-    .container { max-width: 1400px; margin: 0 auto; padding: 1.5rem 2rem 3rem; }
-    .tab-nav { display: flex; gap: 12px; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 10px; overflow-x: auto; }
-    .tab-btn { background: transparent; color: var(--text-muted); border: none; font-size: 14px; font-weight: 600; cursor: pointer; padding: 10px 18px; border-radius: 8px; transition: all 0.2s; white-space: nowrap; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 1.25rem 1.5rem 3rem; }
+    .tab-nav { display: flex; gap: 8px; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border); padding-bottom: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+    .tab-nav::-webkit-scrollbar { display: none; }
+    .tab-btn { background: transparent; color: var(--text-muted); border: none; font-size: 13px; font-weight: 600; cursor: pointer; padding: 8px 14px; border-radius: 8px; transition: all 0.2s; white-space: nowrap; flex-shrink: 0; }
     .tab-btn:hover { color: var(--text-primary); background: var(--bg-hover); }
     .tab-btn.active { background: var(--bg-hover); color: var(--text-primary); border-bottom: 2px solid var(--green-light); border-radius: 8px 8px 0 0; }
-    .tab-content { display: none; animation: fadeIn 0.3s; }
+    .tab-content { display: none; animation: fadeIn 0.25s ease-out; }
     .tab-content.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
     /* ─── CALCULADORA DE TAMAÑO DE POSICIÓN ─── */
-    .calc-container { display: grid; grid-template-columns: 1.15fr 1fr; gap: 1.5rem; }
-    .calc-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
-    .calc-title { font-size: 14px; font-weight: 700; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; }
-    .calc-form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-    .calc-group { display: flex; flex-direction: column; gap: 6px; }
+    .calc-container { display: grid; grid-template-columns: 1.15fr 1fr; gap: 1.25rem; }
+    .calc-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
+    .calc-title { font-size: 13px; font-weight: 700; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .calc-form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.85rem; }
+    .calc-group { display: flex; flex-direction: column; gap: 5px; }
     .calc-group.full { grid-column: 1 / -1; }
     .calc-label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); }
     .calc-input-wrap { position: relative; display: flex; align-items: center; }
-    .calc-input { width: 100%; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; padding: 9px 12px; color: var(--text-primary); font-family: var(--mono); font-size: 13px; outline: none; }
-    .calc-input:focus { border-color: var(--green-light); }
+    
+    /* 16px font-size para neutralizar el auto-zoom de Safari en iPhone */
+    .calc-input, .form-input, .form-select, .form-textarea, .search-input { 
+      width: 100%; 
+      background: var(--bg-secondary); 
+      border: 1px solid var(--border); 
+      border-radius: 8px; 
+      padding: 9px 12px; 
+      color: var(--text-primary); 
+      font-family: var(--mono); 
+      font-size: 16px; 
+      outline: none; 
+      -webkit-appearance: none;
+    }
+    .calc-input:focus, .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--green-light); }
     .calc-suffix { position: absolute; right: 12px; font-size: 11px; color: var(--text-muted); font-family: var(--mono); pointer-events: none; }
 
-    .calc-results-box { background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 1.1rem; margin-bottom: 1rem; }
-    .calc-res-item { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border-subtle); }
+    .calc-results-box { background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }
+    .calc-res-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border-subtle); }
     .calc-res-item:last-child { border-bottom: none; }
     .calc-res-lbl { font-size: 12px; color: var(--text-secondary); }
     .calc-res-val { font-family: var(--mono); font-size: 15px; font-weight: 600; color: var(--text-primary); }
-    .calc-res-val.highlight { color: var(--green-light); font-size: 19px; }
+    .calc-res-val.highlight { color: var(--green-light); font-size: 18px; }
     
-    .calc-targets-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 0.5rem; margin-bottom: 1rem; }
+    .calc-targets-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 0.5rem; margin-bottom: 1rem; }
     .calc-target-card { background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 8px; text-align: center; }
-    .calc-target-label { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 3px; }
-    .calc-target-val { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--green-light); }
+    .calc-target-label { font-size: 10px; font-weight: 600; color: var(--text-muted); margin-bottom: 2px; }
+    .calc-target-val { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--green-light); }
 
-    /* Desglose Subcuentas */
-    .accounts-table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 12px; }
+    .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .accounts-table { width: 100%; border-collapse: collapse; margin-top: 4px; font-size: 12px; min-width: 300px; }
     .accounts-table th { text-align: left; padding: 6px 8px; font-size: 10px; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); }
     .accounts-table td { padding: 6px 8px; border-bottom: 1px solid var(--border-subtle); }
     .accounts-table tr.highlight-jaime { background: rgba(0, 143, 76, 0.08); font-weight: 600; }
     .accounts-table tr.highlight-jaime td { color: var(--green-light); }
 
-    .adr-banner { padding: 8px 12px; border-radius: 8px; font-size: 11px; margin-top: 6px; display: flex; align-items: center; gap: 8px; }
+    .adr-banner { padding: 8px 10px; border-radius: 8px; font-size: 11px; margin-top: 6px; display: flex; align-items: center; gap: 6px; }
     .adr-banner.optimal { background: var(--green-dim); color: var(--green-light); border: 1px solid rgba(0,143,76,0.3); }
     .adr-banner.warning { background: var(--gold-dim); color: var(--gold); border: 1px solid rgba(245,166,35,0.3); }
 
     /* ─── STATS DASHBOARD ─── */
-    .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 1.5rem; }
+    .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 1.5rem; }
     .stat-group { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-    .stat-card { background: var(--bg-card); padding: 1.5rem; position: relative; transition: background 0.15s; }
+    .stat-card { background: var(--bg-card); padding: 1.25rem; position: relative; transition: background 0.15s; }
     .stat-card:hover { background: var(--bg-hover); }
-    .stat-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 10px; }
-    .stat-value { font-family: var(--mono); font-size: 24px; font-weight: 600; letter-spacing: -0.5px; line-height: 1.2; }
+    .stat-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 8px; }
+    .stat-value { font-family: var(--mono); font-size: 22px; font-weight: 600; letter-spacing: -0.5px; line-height: 1.2; }
     .stat-value.positive { color: var(--green-light); }
     .stat-value.negative { color: var(--red); }
     .stat-value.neutral { color: var(--text-primary); }
-    .stat-sub { font-size: 12px; color: var(--text-secondary); margin-top: 5px; font-family: var(--sans); }
-    .edit-capital-btn { position: absolute; top: 12px; right: 12px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 6px; color: var(--text-secondary); cursor: pointer; padding: 4px 8px; font-size: 11px; }
+    .stat-sub { font-size: 11px; color: var(--text-secondary); margin-top: 4px; font-family: var(--sans); }
+    .edit-capital-btn { position: absolute; top: 10px; right: 10px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 6px; color: var(--text-secondary); cursor: pointer; padding: 4px 8px; font-size: 10px; }
 
     /* ─── CALENDAR & PANELS ─── */
-    .panel-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+    .panel-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; }
     .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
-    .panel-title { font-size: 14px; font-weight: 600; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.05em; }
-    .cal-controls { display: flex; align-items: center; gap: 15px; }
+    .panel-title { font-size: 13px; font-weight: 600; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.05em; }
+    .cal-controls { display: flex; align-items: center; gap: 12px; }
     .cal-controls button { background: var(--bg-secondary); border: 1px solid var(--border); color: var(--text-primary); border-radius: 6px; padding: 6px 12px; cursor: pointer; }
-    .cal-month-label { font-family: var(--mono); font-weight: 600; font-size: 16px; min-width: 140px; text-align: center; }
-    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
-    .cal-header-day { text-align: center; font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; }
-    .cal-day { background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: 8px; min-height: 80px; padding: 8px; display: flex; flex-direction: column; }
+    .cal-month-label { font-family: var(--mono); font-weight: 600; font-size: 15px; min-width: 120px; text-align: center; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+    .cal-header-day { text-align: center; font-size: 10px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+    .cal-day { background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: 6px; min-height: 70px; padding: 6px; display: flex; flex-direction: column; }
     .cal-day.empty { background: transparent; border-color: transparent; }
-    .cal-day-num { font-size: 12px; color: var(--text-muted); font-weight: 500; }
-    .cal-day-pnl { font-family: var(--mono); font-size: 14px; font-weight: 600; text-align: right; margin-top: auto; }
+    .cal-day-num { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+    .cal-day-pnl { font-family: var(--mono); font-size: 12px; font-weight: 600; text-align: right; margin-top: auto; }
     .cal-day.win { border-color: rgba(0,143,76,0.35); background: var(--green-dim); color: var(--green-light); }
     .cal-day.loss { border-color: rgba(255,71,87,0.3); background: var(--red-dim); color: var(--red); }
 
     /* ─── BUTTONS & UTILS ─── */
-    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; gap: 15px; flex-wrap: wrap; }
-    .search-box { display: flex; align-items: center; gap: 8px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; }
-    .search-box svg { width: 15px; height: 15px; fill: var(--text-muted); flex-shrink: 0; }
-    .search-input { background: transparent; border: none; color: var(--text-primary); font-size: 13px; font-family: var(--mono); outline: none; width: 170px; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; gap: 12px; flex-wrap: wrap; }
+    .search-box { display: flex; align-items: center; gap: 8px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; flex: 1; max-width: 250px; }
+    .search-box svg { width: 14px; height: 14px; fill: var(--text-muted); flex-shrink: 0; }
+    .search-input { border: none; padding: 0; font-size: 14px; width: 100%; }
     .search-input::placeholder { color: var(--text-muted); font-family: var(--sans); }
 
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 9px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; font-size: 13px; transition: background 0.15s; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 10px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; font-size: 13px; transition: background 0.15s; min-height: 42px; }
     .btn-primary { background: var(--green); color: #FFFFFF; }
     .btn-primary:hover { background: var(--green-light); }
     .btn-ghost { background: transparent; color: var(--text-secondary); border: 1px solid var(--border); }
     .btn-ghost:hover { background: var(--bg-hover); color: var(--text-primary); }
-    canvas#equityChart { width: 100% !important; height: 300px !important; margin-top: 20px; }
+    canvas#equityChart { width: 100% !important; height: 260px !important; margin-top: 15px; }
 
     /* ─── TABLE ─── */
-    .table-wrapper { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow-x: auto; }
+    .table-wrapper { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .trade-table { width: 100%; border-collapse: collapse; white-space: nowrap; }
-    .trade-table thead th { padding: 12px 14px; text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); background: var(--bg-secondary); border-bottom: 1px solid var(--border); }
+    .trade-table thead th { padding: 10px 12px; text-align: left; font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); background: var(--bg-secondary); border-bottom: 1px solid var(--border); }
     .trade-table tbody tr { border-bottom: 1px solid var(--border-subtle); }
     .trade-table tbody tr:hover { background: var(--bg-hover); }
-    .trade-table tbody td { padding: 12px 14px; font-size: 13px; vertical-align: middle; }
+    .trade-table tbody td { padding: 10px 12px; font-size: 13px; vertical-align: middle; }
     .cell-mono { font-family: var(--mono); font-size: 12px; }
     .cell-symbol { font-family: var(--mono); font-weight: 600; font-size: 13px; color: var(--blue); }
     
-    .badge { display: inline-flex; padding: 3px 8px; border-radius: 5px; font-family: var(--mono); font-size: 11px; font-weight: 500; }
+    .badge { display: inline-flex; padding: 3px 7px; border-radius: 5px; font-family: var(--mono); font-size: 10px; font-weight: 500; }
     .badge-long { background: var(--green-dim); color: var(--green-light); }
     .badge-short { background: var(--red-dim); color: var(--red); }
-    .tag-pill { display: inline-flex; padding: 2px 7px; border-radius: 4px; font-size: 10px; font-family: var(--mono); background: var(--blue-dim); color: var(--blue); }
+    .tag-pill { display: inline-flex; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-family: var(--mono); background: var(--blue-dim); color: var(--blue); }
     .thumb-btn { width: 34px; height: 26px; border-radius: 5px; border: 1px dashed var(--border); background: transparent; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; overflow: hidden; }
     .thumb-btn img { width: 100%; height: 100%; object-fit: cover; }
-    .action-btn { background: transparent; border: none; font-size: 14px; cursor: pointer; margin-right: 5px; opacity: 0.7; }
-    .action-btn:hover { opacity: 1; }
+    .action-btn { background: transparent; border: none; font-size: 14px; cursor: pointer; margin-right: 5px; opacity: 0.7; padding: 4px; }
 
     /* ─── MODAL ─── */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); z-index: 200; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .modal-overlay.open { opacity: 1; pointer-events: all; }
-    .modal { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; width: 750px; max-width: 95vw; max-height: 90vh; overflow-y: auto; }
-    .modal-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-    .modal-body { padding: 1.5rem; }
-    .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .modal { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px 16px 0 0; width: 100%; max-width: 750px; max-height: 92vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .modal-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--bg-card); z-index: 10; }
+    .modal-body { padding: 1.25rem; }
+    .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
     .form-group.full { grid-column: 1 / -1; }
     .form-label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-secondary); }
-    .form-input, .form-select, .form-textarea { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; padding: 10px; color: var(--text-primary); font-size: 13px; outline: none; }
-    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--green-light); }
-    .form-textarea { resize: vertical; min-height: 70px; }
+    .form-textarea { resize: vertical; min-height: 60px; }
     
-    .upload-zone { border: 2px dashed var(--border); border-radius: 10px; padding: 1.5rem; text-align: center; cursor: pointer; background: var(--bg-secondary); position: relative; }
+    .upload-zone { border: 2px dashed var(--border); border-radius: 10px; padding: 1.25rem; text-align: center; cursor: pointer; background: var(--bg-secondary); position: relative; }
     .upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-    .upload-preview { width: 100%; max-height: 200px; object-fit: cover; border-radius: 6px; display: none; margin-top: 10px; }
-    .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
+    .upload-preview { width: 100%; max-height: 180px; object-fit: cover; border-radius: 6px; display: none; margin-top: 8px; }
+    .modal-footer { padding: 1rem 1.25rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; position: sticky; bottom: 0; background: var(--bg-card); }
 
-    .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; }
+    .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.94); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; }
     .lightbox.open { opacity: 1; pointer-events: all; }
-    .lightbox img { max-width: 90vw; max-height: 85vh; border-radius: 10px; border: 1px solid var(--border); }
-    .lightbox-close { position: absolute; top: 1.5rem; right: 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); padding: 8px 15px; cursor: pointer; }
+    .lightbox img { max-width: 92vw; max-height: 85vh; border-radius: 8px; border: 1px solid var(--border); }
+    .lightbox-close { position: absolute; top: 1rem; right: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); padding: 8px 14px; cursor: pointer; font-size: 13px; }
 
-    @media (max-width: 950px) {
+    /* ─── RESPONSIVE MÓVIL (IPHONE) ─── */
+    @media (max-width: 820px) {
+      .container { padding: 1rem 1rem 2.5rem; }
+      .header { padding: 0 1rem; }
+      .header-meta { display: none; }
       .calc-container { grid-template-columns: 1fr; }
+      .calc-form-grid { grid-template-columns: 1fr; }
       .dashboard-grid { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+      .modal { border-radius: 16px 16px 0 0; }
+      .section-header { flex-direction: column; align-items: stretch; }
+      .search-box { max-width: 100%; }
+    }
+
+    @media (min-width: 821px) {
+      .modal-overlay { align-items: center; }
+      .modal { border-radius: 16px; max-height: 88vh; }
     }
   </style>
 </head>
@@ -215,16 +242,14 @@
   <div id="tab-calc" class="tab-content active">
     <div class="calc-container">
       
-      <!-- COLUMNA IZQUIERDA: VARIABLES EDITABLES -->
+      <!-- VARIABLES EDITABLES -->
       <div class="calc-card">
         <div class="calc-title">
           <span>⚙️ Variables de Entrada</span>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <select id="c-op-type" class="calc-input" style="padding:4px 8px; font-size:11px;" onchange="recalcPositionSize()">
-              <option value="TRADE">Trade (Day/Fast)</option>
-              <option value="SWING" selected>Swing Trading</option>
-            </select>
-          </div>
+          <select id="c-op-type" class="calc-input" style="width:auto; padding:4px 8px; font-size:12px;" onchange="recalcPositionSize()">
+            <option value="TRADE">Trade (Day/Fast)</option>
+            <option value="SWING" selected>Swing Trading</option>
+          </select>
         </div>
 
         <div class="calc-form-grid">
@@ -240,14 +265,14 @@
           <div class="calc-group">
             <label class="calc-label">Capital Total Cartera (€)</label>
             <div class="calc-input-wrap">
-              <input type="number" id="c-cap-eur" class="calc-input" value="38400" step="100" oninput="onCalcCapitalEurChange()">
+              <input type="number" inputmode="decimal" id="c-cap-eur" class="calc-input" value="38400" step="100" oninput="onCalcCapitalEurChange()">
               <span class="calc-suffix">EUR</span>
             </div>
           </div>
           <div class="calc-group">
             <label class="calc-label">Capital Total Cartera ($)</label>
             <div class="calc-input-wrap">
-              <input type="number" id="c-cap-usd" class="calc-input" value="42810" step="100" oninput="onCalcCapitalUsdChange()">
+              <input type="number" inputmode="decimal" id="c-cap-usd" class="calc-input" value="42810" step="100" oninput="onCalcCapitalUsdChange()">
               <span class="calc-suffix">USD</span>
             </div>
           </div>
@@ -255,7 +280,7 @@
           <div class="calc-group">
             <label class="calc-label">Riesgo por Operación (%)</label>
             <div class="calc-input-wrap">
-              <input type="number" id="c-risk-pct" class="calc-input" value="0.50" step="0.05" oninput="recalcPositionSize()">
+              <input type="number" inputmode="decimal" id="c-risk-pct" class="calc-input" value="0.50" step="0.05" oninput="recalcPositionSize()">
               <span class="calc-suffix">%</span>
             </div>
           </div>
@@ -270,7 +295,7 @@
           <div class="calc-group full">
             <label class="calc-label">Precio de Compra / Entrada ($)</label>
             <div class="calc-input-wrap">
-              <input type="number" id="c-entry" class="calc-input" placeholder="0.00" step="0.01" oninput="onCalcEntryChange()">
+              <input type="number" inputmode="decimal" id="c-entry" class="calc-input" placeholder="0.00" step="0.01" oninput="onCalcEntryChange()">
               <span class="calc-suffix">USD</span>
             </div>
           </div>
@@ -279,14 +304,14 @@
           <div class="calc-group">
             <label class="calc-label">Precio Stop Loss ($)</label>
             <div class="calc-input-wrap">
-              <input type="number" id="c-stop-price" class="calc-input" placeholder="0.00" step="0.01" oninput="onCalcStopPriceChange()">
+              <input type="number" inputmode="decimal" id="c-stop-price" class="calc-input" placeholder="0.00" step="0.01" oninput="onCalcStopPriceChange()">
               <span class="calc-suffix">USD</span>
             </div>
           </div>
           <div class="calc-group">
             <label class="calc-label">% Stop Loss</label>
             <div class="calc-input-wrap">
-              <input type="number" id="c-stop-pct" class="calc-input" placeholder="0.00" step="0.01" oninput="onCalcStopPctChange()">
+              <input type="number" inputmode="decimal" id="c-stop-pct" class="calc-input" placeholder="0.00" step="0.01" oninput="onCalcStopPctChange()">
               <span class="calc-suffix">%</span>
             </div>
           </div>
@@ -294,7 +319,7 @@
           <div class="calc-group full">
             <label class="calc-label">ADR del Activo (% Opcional)</label>
             <div class="calc-input-wrap">
-              <input type="number" id="c-adr" class="calc-input" placeholder="Ej: 2.79" step="0.01" oninput="recalcPositionSize()">
+              <input type="number" inputmode="decimal" id="c-adr" class="calc-input" placeholder="Ej: 2.79" step="0.01" oninput="recalcPositionSize()">
               <span class="calc-suffix">%</span>
             </div>
             <div id="adr-banner" style="display:none;" class="adr-banner"></div>
@@ -302,7 +327,7 @@
         </div>
       </div>
 
-      <!-- COLUMNA DERECHA: RESULTADOS + SUB-CUENTAS + TARGETS -->
+      <!-- RESULTADOS + SUBCUENTAS + TARGETS -->
       <div class="calc-card" style="display:flex; flex-direction:column; justify-content:space-between;">
         <div>
           <div class="calc-title">
@@ -325,17 +350,17 @@
             </div>
           </div>
 
-          <!-- DESGLOSE POR SUBCUENTA -->
+          <!-- DESGLOSE SUBCUENTAS -->
           <div style="font-size:11px; font-weight:600; text-transform:uppercase; color:var(--text-secondary); margin-bottom:4px;">
             👥 Reparto Cartera Familiar
           </div>
-          <div style="background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:8px; overflow:hidden; margin-bottom:1rem;">
+          <div class="table-responsive" style="background:var(--bg-secondary); border:1px solid var(--border-subtle); border-radius:8px; margin-bottom:1rem;">
             <table class="accounts-table">
               <thead>
                 <tr>
                   <th>Cuenta</th>
-                  <th>Capital Base</th>
-                  <th>% Peso</th>
+                  <th>Base</th>
+                  <th>Peso</th>
                   <th>Acciones</th>
                   <th>Importe ($)</th>
                 </tr>
@@ -365,10 +390,10 @@
         </div>
 
         <div style="margin-top:1rem; display:flex; flex-direction:column; gap:8px;">
-          <button class="btn btn-primary" onclick="pasarCalculoAHistorial()" style="width:100%; padding:11px; font-size:13px;">
-            📥 Pasar Datos a Historial (Solo Jaime)
+          <button class="btn btn-primary" onclick="pasarCalculoAHistorial()" style="width:100%;">
+            📥 Pasar a Historial (Solo Jaime)
           </button>
-          <button class="btn btn-ghost" onclick="copiarAlPortapapelesDiscord()" style="width:100%; padding:8px;">
+          <button class="btn btn-ghost" onclick="copiarAlPortapapelesDiscord()" style="width:100%;">
             📋 Copiar Resumen para Discord
           </button>
         </div>
@@ -380,11 +405,11 @@
   <!-- PESTAÑA 1: HISTORIAL -->
   <div id="tab-journal" class="tab-content">
     <div class="section-header">
-      <div style="display:flex; align-items:center; gap: 15px;">
-        <h2 style="font-size: 16px; font-weight: 600;">Tus Operaciones</h2>
+      <div style="display:flex; align-items:center; gap: 10px; flex:1;">
+        <h2 style="font-size: 15px; font-weight: 600;">Operaciones</h2>
         <div class="search-box">
           <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-          <input type="text" id="tickerSearchInput" class="search-input" placeholder="Buscar por ticker..." oninput="renderTable()" style="text-transform:uppercase;">
+          <input type="text" id="tickerSearchInput" class="search-input" placeholder="Buscar ticker..." oninput="renderTable()" style="text-transform:uppercase;">
         </div>
       </div>
       <button class="btn btn-primary" onclick="openAddModal()">+ Nueva Operación</button>
@@ -417,7 +442,7 @@
       <div class="stat-group">
         <div class="stat-card">
           <button class="edit-capital-btn" onclick="configurarCapital()">Editar</button>
-          <div class="stat-label">Capital Inicial Base</div>
+          <div class="stat-label">Capital Base</div>
           <div class="stat-value neutral" id="stat-initial-cap">—</div>
         </div>
         <div class="stat-card">
@@ -451,7 +476,11 @@
       </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1.5rem; margin-top: 1.5rem;">
+    <div style="display: grid; grid-template-columns: 1fr; gap: 1.25rem;">
+      <div class="panel-card">
+        <div class="panel-title">Curva de Equidad</div>
+        <canvas id="equityChart"></canvas>
+      </div>
       <div class="panel-card">
         <div class="panel-title" style="margin-bottom:1rem;">Desglose Mensual</div>
         <div class="table-wrapper">
@@ -467,10 +496,6 @@
           </table>
         </div>
       </div>
-      <div class="panel-card">
-        <div class="panel-title">Curva de Equidad</div>
-        <canvas id="equityChart"></canvas>
-      </div>
     </div>
   </div>
 
@@ -478,7 +503,7 @@
   <div id="tab-calendar" class="tab-content">
     <div class="panel-card" style="max-width: 900px; margin: 0 auto;">
       <div class="panel-header">
-        <span class="panel-title">Calendario de Resultados</span>
+        <span class="panel-title">Calendario</span>
         <div class="cal-controls">
           <button onclick="changeMonth(-1)">←</button>
           <span class="cal-month-label" id="calMonthLabel">Mes Año</span>
@@ -495,7 +520,7 @@
 <div class="modal-overlay" id="addModal" onclick="closeModalIfOverlay(event)">
   <div class="modal">
     <div class="modal-header">
-      <h3 style="font-size:16px;">Registrar Operación</h3>
+      <h3 style="font-size:15px;">Registrar Operación</h3>
       <button class="action-btn" onclick="closeAddModal()">✕</button>
     </div>
     <div class="modal-body">
@@ -518,29 +543,29 @@
 
         <div class="form-group">
           <label class="form-label">Patrón / Setup</label>
-          <input type="text" class="form-input" id="f-setup" list="setup-list" placeholder="Elige o escribe uno nuevo...">
+          <input type="text" class="form-input" id="f-setup" list="setup-list" placeholder="Elige setup...">
           <datalist id="setup-list"></datalist>
         </div>
         <div class="form-group">
           <label class="form-label">Títulos / Acciones</label>
-          <input type="number" class="form-input" id="f-shares" step="any" placeholder="Ej: 100" oninput="autoCalcularPnL()">
+          <input type="number" inputmode="decimal" class="form-input" id="f-shares" step="any" placeholder="Ej: 100" oninput="autoCalcularPnL()">
         </div>
         <div class="form-group">
           <label class="form-label">P&L Final Realizado ($)</label>
-          <input type="number" class="form-input" id="f-pnl" step="0.01">
+          <input type="number" inputmode="decimal" class="form-input" id="f-pnl" step="0.01">
         </div>
 
         <div class="form-group">
           <label class="form-label">Precio de Entrada</label>
-          <input type="number" class="form-input" id="f-entry" step="0.01" oninput="autoCalcularPnL()">
+          <input type="number" inputmode="decimal" class="form-input" id="f-entry" step="0.01" oninput="autoCalcularPnL()">
         </div>
         <div class="form-group">
           <label class="form-label">Stop Loss Inicial</label>
-          <input type="number" class="form-input" id="f-stop" step="0.01">
+          <input type="number" inputmode="decimal" class="form-input" id="f-stop" step="0.01">
         </div>
         <div class="form-group">
           <label class="form-label">Precio de Salida</label>
-          <input type="number" class="form-input" id="f-exit" step="0.01" oninput="autoCalcularPnL()">
+          <input type="number" inputmode="decimal" class="form-input" id="f-exit" step="0.01" oninput="autoCalcularPnL()">
         </div>
 
         <div class="form-group full">
@@ -551,7 +576,7 @@
           <label class="form-label">Captura del Gráfico</label>
           <div class="upload-zone" id="uploadZone">
             <input type="file" accept="image/*" id="f-image" onchange="handleImageUpload(event)">
-            <div class="upload-text" id="uploadText">Arrastra una imagen o haz clic para subirla</div>
+            <div class="upload-text" id="uploadText" style="font-size:12px;">Toca para adjuntar gráfico</div>
             <img id="uploadPreview" class="upload-preview" alt="Preview">
           </div>
         </div>
@@ -588,7 +613,6 @@ let computedTrades = [];
 let editingId = null;
 let currentImage = null;
 
-// Estructura fija de la cartera familiar
 const familyAccounts = [
   { name: 'Jaime', eur: 21200 },
   { name: 'Irene', eur: 6000 },
@@ -596,8 +620,8 @@ const familyAccounts = [
   { name: 'Sara',  eur: 5600 }
 ];
 
-let currentFxRate = 42810 / 38400; // Tasa implícita inicial EUR/USD (~1.1148)
-let computedJaimeShares = 0; // Guarda las acciones proporcionales de Jaime
+let currentFxRate = 42810 / 38400;
+let computedJaimeShares = 0;
 
 const calDate = new Date();
 let currentMonth = calDate.getMonth();
@@ -641,9 +665,6 @@ function switchTab(tabId) {
   if (tabId === 'stats') { updateStats(); renderChart(); }
 }
 
-/* ─────────────────────────────────────────────────────────────
-   LÓGICA: CÁLCULO DE LA POSICIÓN (STOP INVERSO, ADR Y CARTERA)
-───────────────────────────────────────────────────────────── */
 function onCalcCapitalEurChange() {
   const eur = parseFloat(document.getElementById('c-cap-eur').value) || 0;
   const usd = eur * currentFxRate;
@@ -668,7 +689,6 @@ function onCalcEntryChange() {
   recalcPositionSize();
 }
 
-// Al cambiar el PRECIO del Stop -> actualiza automáticamente el %
 function onCalcStopPriceChange() {
   const entry = parseFloat(document.getElementById('c-entry').value) || 0;
   const stopPrice = parseFloat(document.getElementById('c-stop-price').value) || 0;
@@ -679,7 +699,6 @@ function onCalcStopPriceChange() {
   recalcPositionSize();
 }
 
-// Al cambiar el % del Stop -> actualiza automáticamente el PRECIO
 function onCalcStopPctChange() {
   const entry = parseFloat(document.getElementById('c-entry').value) || 0;
   const stopPct = parseFloat(document.getElementById('c-stop-pct').value) || 0;
@@ -699,7 +718,6 @@ function recalcPositionSize() {
   const adr = parseFloat(document.getElementById('c-adr').value) || 0;
   const opType = document.getElementById('c-op-type').value;
 
-  // 1R Monetario Global
   const r1Usd = capUsd * (riskPct / 100);
   document.getElementById('c-risk-usd').value = `$${fmt(r1Usd)}`;
 
@@ -716,7 +734,6 @@ function recalcPositionSize() {
     document.getElementById('res-portfolio-pct').textContent = `${fmt(portfolioPct)}%`;
     document.getElementById('res-risk-per-share').textContent = `$${fmt(riskPerShare)}`;
 
-    // Targets en R
     document.getElementById('res-target-1r').textContent = `$${fmtPrice(entry + (1 * riskPerShare))}`;
     document.getElementById('res-target-2r').textContent = `$${fmtPrice(entry + (2 * riskPerShare))}`;
     document.getElementById('res-target-3r').textContent = `$${fmtPrice(entry + (3 * riskPerShare))}`;
@@ -730,7 +747,6 @@ function recalcPositionSize() {
     document.getElementById('res-target-3r').textContent = `—`;
   }
 
-  // Reparto Cartera Familiar
   const tbody = document.getElementById('subaccountsTableBody');
   const totalBaseEur = familyAccounts.reduce((acc, a) => acc + a.eur, 0);
 
@@ -750,7 +766,6 @@ function recalcPositionSize() {
     </tr>`;
   }).join('');
 
-  // Validación Técnica ADR
   const adrBanner = document.getElementById('adr-banner');
   if (adr > 0 && stopPct > 0) {
     adrBanner.style.display = 'flex';
@@ -758,19 +773,19 @@ function recalcPositionSize() {
       const threshold = 0.5 * adr;
       if (stopPct < threshold) {
         adrBanner.className = 'adr-banner warning';
-        adrBanner.innerHTML = `⚠️ <strong>Stop muy ceñido (${stopPct.toFixed(2)}% vs 0.5×ADR: ${threshold.toFixed(2)}%)</strong>: Riesgo de barrido por ruido intrassesión.`;
+        adrBanner.innerHTML = `⚠️ <strong>Stop ceñido (${stopPct.toFixed(2)}% vs 0.5×ADR: ${threshold.toFixed(2)}%)</strong>: Riesgo de ruido.`;
       } else {
         adrBanner.className = 'adr-banner optimal';
-        adrBanner.innerHTML = `✅ <strong>Stop óptimo para Trade</strong> (${stopPct.toFixed(2)}% supera el mínimo de 0.5×ADR: ${threshold.toFixed(2)}%).`;
+        adrBanner.innerHTML = `✅ <strong>Stop óptimo para Trade</strong> (Supera 0.5×ADR: ${threshold.toFixed(2)}%).`;
       }
     } else {
       const threshold = 1.5 * adr;
       if (stopPct > threshold) {
         adrBanner.className = 'adr-banner warning';
-        adrBanner.innerHTML = `⚠️ <strong>Stop amplio (${stopPct.toFixed(2)}% vs 1.5×ADR: ${threshold.toFixed(2)}%)</strong>: Considera reducir riesgo o afinar entrada.`;
+        adrBanner.innerHTML = `⚠️ <strong>Stop amplio (${stopPct.toFixed(2)}% vs 1.5×ADR: ${threshold.toFixed(2)}%)</strong>: Considera afinar entrada.`;
       } else {
         adrBanner.className = 'adr-banner optimal';
-        adrBanner.innerHTML = `✅ <strong>Stop calibrado para Swing</strong> (${stopPct.toFixed(2)}% dentro del margen de 1.5×ADR: ${threshold.toFixed(2)}%).`;
+        adrBanner.innerHTML = `✅ <strong>Stop óptimo para Swing</strong> (Dentro de 1.5×ADR: ${threshold.toFixed(2)}%).`;
       }
     }
   } else {
@@ -808,13 +823,10 @@ function copiarAlPortapapelesDiscord() {
 • Riesgo asumido: ${riskPct}% (1R)`;
 
   navigator.clipboard.writeText(text).then(() => {
-    alert('¡Ficha copiada al portapapeles para Discord!');
+    alert('¡Ficha copiada al portapapeles!');
   });
 }
 
-/* ─────────────────────────────────────────────────────────────
-   REFRESH Y OPERATIVA DEL HISTORIAL
-───────────────────────────────────────────────────────────── */
 function refreshApp() {
   let running = initialCapital;
   let chronoTrades = [...trades].sort((a,b) => new Date(a.date) - new Date(b.date));
@@ -933,7 +945,7 @@ async function configurarCapital() {
       await db.from('tradelog_settings').upsert({ key: 'initial_capital', value: initialCapital.toString() });
       refreshApp();
     } else {
-      alert("Por favor, introduce un número válido sin formato raro.");
+      alert("Por favor, introduce un número válido.");
     }
   }
 }
@@ -1185,13 +1197,13 @@ function renderChart() {
   if (closed.length < 1) return;
 
   const W = canvas.offsetWidth; 
-  const H = 300; 
+  const H = 260; 
   canvas.width = W; canvas.height = H;
 
   const points = [initialCapital, ...closed.map(t => t.finalCap)];
   const min = Math.min(...points); const max = Math.max(...points);
   const range = (max - min) || 1;
-  const pd = 20, cw = W - (pd*2), ch = H - (pd*2);
+  const pd = 15, cw = W - (pd*2), ch = H - (pd*2);
   const px = i => pd + (i / (points.length - 1)) * cw;
   const py = v => pd + ch - ((v - min) / range) * ch;
 
@@ -1212,7 +1224,7 @@ function renderChart() {
   ctx.moveTo(px(0), py(points[0]));
   points.forEach((v, i) => i > 0 && ctx.lineTo(px(i), py(v)));
   ctx.strokeStyle = isPositive ? '#00B35F' : '#FF4757';
-  ctx.lineWidth = 3; 
+  ctx.lineWidth = 2.5; 
   ctx.stroke();
 }
 window.addEventListener('resize', () => { if(document.getElementById('tab-stats').classList.contains('active')) renderChart(); });
