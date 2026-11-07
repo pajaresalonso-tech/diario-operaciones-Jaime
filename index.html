@@ -90,7 +90,13 @@
     .cal-day.loss { border-color: rgba(255,71,87,0.3); background: var(--red-dim); color: var(--red); }
 
     /* ─── BUTTONS & UTILS ─── */
-    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; gap: 15px; flex-wrap: wrap; }
+    .search-box { display: flex; align-items: center; gap: 8px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; }
+    .search-box svg { width: 15px; height: 15px; fill: var(--text-muted); flex-shrink: 0; }
+    .search-input { background: transparent; border: none; color: var(--text-primary); font-size: 13px; font-family: var(--mono); outline: none; width: 170px; }
+    .search-input::placeholder { color: var(--text-muted); font-family: var(--sans); }
+    .search-input:focus { color: var(--text-primary); }
+
     .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; font-size: 13px; transition: background 0.15s; }
     .btn-primary { background: var(--green); color: #FFFFFF; }
     .btn-primary:hover { background: var(--green-light); }
@@ -147,7 +153,6 @@
 <header class="header">
   <div class="logo">
     <div class="logo-mark">
-      <!-- Icono The Long Run -->
       <svg viewBox="0 0 1000 1000">
         <path d="M654 186 H300 C217 186 150 253 150 336 V700 C150 783 217 850 300 850 H700 C783 850 850 783 850 700 V358" fill="none" stroke="#008F4C" stroke-width="48" stroke-linecap="round"/>
         <path d="M195 775 L350 470 L462 700 L538 320 L610 500 L745 270" fill="none" stroke="#FFFFFF" stroke-width="44" stroke-linecap="round" stroke-linejoin="miter"/>
@@ -172,7 +177,13 @@
   <!-- PESTAÑA 1: HISTORIAL -->
   <div id="tab-journal" class="tab-content active">
     <div class="section-header">
-      <h2 style="font-size: 16px; font-weight: 600;">Tus Operaciones</h2>
+      <div style="display:flex; align-items:center; gap: 15px;">
+        <h2 style="font-size: 16px; font-weight: 600;">Tus Operaciones</h2>
+        <div class="search-box">
+          <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          <input type="text" id="tickerSearchInput" class="search-input" placeholder="Buscar por ticker..." oninput="renderTable()" style="text-transform:uppercase;">
+        </div>
+      </div>
       <button class="btn btn-primary" onclick="openAddModal()">+ Nueva Operación</button>
     </div>
     <div class="table-wrapper">
@@ -463,10 +474,16 @@ function autoCalcularPnL() {
 
 function renderTable() {
   const tbody = document.getElementById('tradeTableBody');
-  const sorted = [...computedTrades].reverse(); 
+  const searchTicker = (document.getElementById('tickerSearchInput')?.value || '').toUpperCase().trim();
+  
+  let sorted = [...computedTrades].reverse(); 
+
+  if (searchTicker) {
+    sorted = sorted.filter(t => (t.symbol || '').toUpperCase().includes(searchTicker));
+  }
 
   if (!sorted.length) {
-    tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; padding: 2rem; color:var(--text-muted)">Sin operaciones registradas.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; padding: 2rem; color:var(--text-muted)">Sin operaciones registradas${searchTicker ? ` para "${searchTicker}"` : ''}.</td></tr>`;
     return;
   }
 
