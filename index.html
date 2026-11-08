@@ -91,7 +91,8 @@
     .logo-text span { color: var(--green-light); font-weight: 800; }
     .header-actions { display: flex; align-items: center; gap: 12px; }
     .theme-toggle-btn { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: 12px; font-weight: 600; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; gap: 6px; }
-    .header-meta { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
+    .header-meta { font-family: var(--mono); font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 10px; }
+    .fx-tag { background: var(--bg-card); border: 1px solid var(--border); padding: 3px 7px; border-radius: 6px; color: var(--green-light); }
 
     /* ─── NAVIGATION TABS ─── */
     .container { max-width: 1400px; margin: 0 auto; padding: 1.25rem 1.5rem 3rem; }
@@ -285,6 +286,7 @@
   <div class="header-actions">
     <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()">☀️ Claro</button>
     <div class="header-meta">
+      <span class="fx-tag" id="fxRateBadge">EUR/USD: …</span>
       <span id="currentDate">—</span>
     </div>
   </div>
@@ -716,7 +718,7 @@ function updateThemeBtn(isLight) {
   if (btn) btn.textContent = isLight ? '🌙 Oscuro' : '☀️ Claro';
 }
 
-/* ─── CATÁLOGO LOCAL + DESCARGA OFICIAL UNIVERSAL SEC ─── */
+/* ─── CATÁLOGO LOCAL + DESCARGA UNIVERSAL SEC ─── */
 let COMPANY_TICKERS = {
   "META": "Meta Platforms Inc",
   "AAPL": "Apple Inc",
@@ -733,7 +735,6 @@ let COMPANY_TICKERS = {
   "TSLA": "Tesla Inc"
 };
 
-// Carga en segundo plano el listado completo de la SEC (~10.000 tickers y nombres)
 async function cargarBaseTickersCompleta() {
   try {
     const res = await fetch('https://cdn.jsdelivr.net/gh/jadchaar/sec-cik-mapper@main/mappings/stocks/ticker_to_company_name.json');
@@ -746,6 +747,28 @@ async function cargarBaseTickersCompleta() {
   }
 }
 
+/* ─── ACTUALIZACIÓN DINÁMICA DEL TIPO DE CAMBIO (EUR/USD) ─── */
+async function actualizarTipoDeCambio() {
+  const fxBadge = document.getElementById('fxRateBadge');
+  try {
+    const res = await fetch('https://api.frankfurter.dev/v1/latest?base=EUR&symbols=USD');
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.rates && data.rates.USD) {
+        currentFxRate = parseFloat(data.rates.USD);
+        if (fxBadge) fxBadge.textContent = `EUR/USD: ${currentFxRate.toFixed(4)}`;
+        
+        // Recalcular capital en USD a partir del EUR acumulado actual
+        updateTotalFromSubaccounts();
+        return;
+      }
+    }
+  } catch (err) {
+    console.warn('No se pudo obtener el tipo de cambio en vivo, usando ratio base:', err);
+  }
+  if (fxBadge) fxBadge.textContent = `EUR/USD: ${currentFxRate.toFixed(4)}`;
+}
+
 let familyAccounts = [
   { name: 'Jaime', eur: 21200 },
   { name: 'Irene', eur: 6000 },
@@ -754,7 +777,7 @@ let familyAccounts = [
 ];
 
 let initialCapital = familyAccounts[0].eur;
-let currentFxRate = 42810 / 38400;
+let currentFxRate = 42810 / 38400; // Valor fallback por defecto (~1.1148)
 let currentOpType = 'TRADE';
 let computedJaimeShares = 0;
 let trades = [];
@@ -775,6 +798,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderSubaccountsTable();
   recalcPositionSize();
   cargarBaseTickersCompleta();
+  await actualizarTipoDeCambio();
   await cargarDatosDeSupabase();
 });
 
@@ -877,6 +901,8 @@ function onCalcCapitalUsdChange() {
   const usd = parseFloat(document.getElementById('c-cap-usd').value) || 0;
   const eur = parseFloat(document.getElementById('c-cap-eur').value) || 0;
   if (eur > 0) currentFxRate = usd / eur;
+  const fxBadge = document.getElementById('fxRateBadge');
+  if (fxBadge) fxBadge.textContent = `EUR/USD: ${currentFxRate.toFixed(4)}`;
   recalcPositionSize();
 }
 
