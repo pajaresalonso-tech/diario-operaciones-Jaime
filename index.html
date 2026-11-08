@@ -13,7 +13,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    /* MODO OSCURO */
     :root {
       --bg-primary: #0B0E14;
       --bg-secondary: #121720;
@@ -37,7 +36,6 @@
       --sans: 'Space Grotesk', sans-serif;
     }
 
-    /* MODO CLARO */
     body.light-theme {
       --bg-primary: #F4F6F8;
       --bg-secondary: #FFFFFF;
@@ -322,7 +320,8 @@
           </div>
           <div class="calc-group">
             <label class="calc-label">Nombre Empresa</label>
-            <input type="text" id="c-company" class="calc-input" placeholder="Meta Platforms, Apple" oninput="onCompanyInput(this.value)">
+            <!-- Campo libre editable sin listeners que pisen el ticker -->
+            <input type="text" id="c-company" class="calc-input" placeholder="Meta Platforms, Apple">
           </div>
 
           <div class="calc-group">
@@ -810,24 +809,11 @@ function switchTab(tabId) {
   if (tabId === 'stats') { updateStats(); renderChart(); }
 }
 
-/* Búsqueda bidireccional */
+/* Autocompletado UNIDIRECCIONAL: Solo Ticker -> Nombre */
 function onTickerInput(val) {
   const upper = (val || '').toUpperCase().trim();
   if (COMPANY_TICKERS[upper]) {
     document.getElementById('c-company').value = COMPANY_TICKERS[upper];
-  }
-}
-
-function onCompanyInput(val) {
-  const raw = (val || '').toLowerCase().trim();
-  if (!raw || raw.length < 2) return;
-
-  for (const [ticker, name] of Object.entries(COMPANY_TICKERS)) {
-    const cleanName = name.toLowerCase();
-    if (cleanName.includes(raw) || raw.includes(cleanName.split(' ')[0])) {
-      document.getElementById('c-ticker').value = ticker;
-      break;
-    }
   }
 }
 
@@ -982,7 +968,7 @@ function recalcPositionSize() {
     }
   });
 
-  // Validación Técnica ADR
+  // Validación Técnica ADR: SL no puede superar el límite
   const adrBanner = document.getElementById('adr-banner');
   if (adr > 0 && stopPct > 0) {
     adrBanner.style.display = 'flex';
