@@ -174,6 +174,42 @@
     .form-group.highlighted-field .form-label span.req-tag { font-size: 9px; background: var(--green); color: #fff; padding: 1px 5px; border-radius: 4px; }
     .form-group.highlighted-field input { border-color: var(--green); background: var(--bg-card); font-weight: 600; }
 
+    /* ─── PARCIALES CONTAINER ─── */
+    .partials-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .partial-row {
+      display: grid;
+      grid-template-columns: 80px 1.1fr 1.1fr 34px;
+      gap: 8px;
+      align-items: center;
+    }
+    .partial-tag {
+      font-size: 11px;
+      font-family: var(--mono);
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .partial-del-btn {
+      background: var(--red-dim);
+      border: 1px solid rgba(255,71,87,0.3);
+      color: var(--red);
+      border-radius: 6px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
     /* ─── STATS DASHBOARD ─── */
     .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 1.5rem; }
     .stat-group { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
@@ -214,6 +250,7 @@
     .btn-primary:hover { background: var(--green-light); }
     .btn-ghost { background: transparent; color: var(--text-secondary); border: 1px solid var(--border); }
     .btn-ghost:hover { background: var(--bg-hover); color: var(--text-primary); }
+    .btn-sm { min-height: 32px; padding: 5px 12px; font-size: 12px; }
     canvas#equityChart { width: 100% !important; height: 280px !important; margin-top: 15px; }
 
     /* ─── TABLE ─── */
@@ -268,6 +305,9 @@
       .section-header { flex-direction: column; align-items: stretch; }
       .search-box { max-width: 100%; }
       .hero-shares-num { font-size: 32px; }
+      .partial-row { grid-template-columns: 1fr 1fr; }
+      .partial-tag { grid-column: 1 / -1; }
+      .partial-del-btn { grid-column: 1 / -1; height: 32px; }
     }
 
     @media (min-width: 821px) {
@@ -322,7 +362,6 @@
           </div>
           <div class="calc-group">
             <label class="calc-label">Nombre Empresa</label>
-            <!-- Campo libre editable sin listeners que pisen el ticker -->
             <input type="text" id="c-company" class="calc-input" placeholder="Meta Platforms, Apple">
           </div>
 
@@ -594,7 +633,7 @@
 
 </div>
 
-<!-- MODAL REGISTRO CON CAMPOS FECHA Y PATRÓN DESTACADOS -->
+<!-- MODAL REGISTRO CON SALIDAS PARCIALES -->
 <div class="modal-overlay" id="addModal" onclick="closeModalIfOverlay(event)">
   <div class="modal">
     <div class="modal-header">
@@ -615,7 +654,7 @@
 
         <div class="form-group">
           <label class="form-label">Dirección</label>
-          <select class="form-select" id="f-direction" onchange="autoCalcularPnL()">
+          <select class="form-select" id="f-direction" onchange="onDirectionOrPriceChange()">
             <option value="LONG">Long</option>
             <option value="SHORT">Short</option>
           </select>
@@ -629,31 +668,65 @@
 
         <div class="form-group">
           <label class="form-label">Títulos / Acciones</label>
-          <input type="number" inputmode="decimal" class="form-input" id="f-shares" step="any" placeholder="Ej: 100" oninput="autoCalcularPnL()">
+          <input type="number" inputmode="decimal" class="form-input" id="f-shares" step="any" placeholder="Ej: 100" oninput="onSharesInput()">
         </div>
-        <div class="form-group">
-          <label class="form-label">P&L Final Realizado ($)</label>
-          <input type="number" inputmode="decimal" class="form-input" id="f-pnl" step="0.01">
-        </div>
-        <div class="form-group"></div>
-
+        
         <div class="form-group">
           <label class="form-label">Precio de Entrada</label>
-          <input type="number" inputmode="decimal" class="form-input" id="f-entry" step="0.01" oninput="autoCalcularPnL()">
+          <input type="number" inputmode="decimal" class="form-input" id="f-entry" step="0.01" oninput="onDirectionOrPriceChange()">
         </div>
+
         <div class="form-group">
           <label class="form-label">Stop Loss Inicial</label>
           <input type="number" inputmode="decimal" class="form-input" id="f-stop" step="0.01">
         </div>
+
+        <!-- TOGGLE DE VENTAS PARCIALES -->
+        <div class="form-group full" style="margin-top: 4px;">
+          <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; font-weight:600; color:var(--text-primary); user-select:none;">
+            <input type="checkbox" id="f-use-partials" onchange="togglePartialsMode(this.checked)" style="width:16px; height:16px; accent-color:var(--green); cursor:pointer;">
+            <span>Aplicar salidas parciales (múltiples ventas ponderadas)</span>
+          </label>
+        </div>
+
+        <!-- CONTENEDOR DINÁMICO DE PARCIALES -->
+        <div id="partialsSection" class="form-group full" style="display:none;">
+          <div class="partials-container">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-secondary);">
+                Desglose de Ventas Parciales
+              </span>
+              <span id="partialsSharesCount" style="font-size:11px; font-family:var(--mono); color:var(--text-muted);">
+                0 / 0 acc
+              </span>
+            </div>
+            
+            <div id="partialsList" style="display:flex; flex-direction:column; gap:8px;"></div>
+            
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+              <button type="button" class="btn btn-ghost btn-sm" onclick="addPartialRow()">+ Añadir Venta Parcial</button>
+              <span id="partialsSummaryNote" style="font-size:11px; font-family:var(--mono); color:var(--green-light);"></span>
+            </div>
+          </div>
+        </div>
+
         <div class="form-group">
-          <label class="form-label">Precio de Salida</label>
+          <label class="form-label">Precio de Salida (Medio)</label>
           <input type="number" inputmode="decimal" class="form-input" id="f-exit" step="0.01" oninput="autoCalcularPnL()">
         </div>
+
+        <div class="form-group">
+          <label class="form-label">P&L Final Realizado ($)</label>
+          <input type="number" inputmode="decimal" class="form-input" id="f-pnl" step="0.01">
+        </div>
+
+        <div class="form-group"></div>
 
         <div class="form-group full">
           <label class="form-label">Notas (Gestión y emociones)</label>
           <textarea class="form-textarea" id="f-notes"></textarea>
         </div>
+
         <div class="form-group full">
           <label class="form-label">Captura del Gráfico</label>
           <div class="upload-zone" id="uploadZone">
@@ -757,8 +830,6 @@ async function actualizarTipoDeCambio() {
       if (data && data.rates && data.rates.USD) {
         currentFxRate = parseFloat(data.rates.USD);
         if (fxBadge) fxBadge.textContent = `EUR/USD: ${currentFxRate.toFixed(4)}`;
-        
-        // Recalcular capital en USD a partir del EUR acumulado actual
         updateTotalFromSubaccounts();
         return;
       }
@@ -777,13 +848,15 @@ let familyAccounts = [
 ];
 
 let initialCapital = familyAccounts[0].eur;
-let currentFxRate = 42810 / 38400; // Valor fallback por defecto (~1.1148)
+let currentFxRate = 42810 / 38400;
 let currentOpType = 'TRADE';
 let computedJaimeShares = 0;
 let trades = [];
 let computedTrades = [];
 let editingId = null;
 let currentImage = null;
+
+let partials = [];
 
 const calDate = new Date();
 let currentMonth = calDate.getMonth();
@@ -833,7 +906,6 @@ function switchTab(tabId) {
   if (tabId === 'stats') { updateStats(); renderChart(); }
 }
 
-/* Autocompletado UNIDIRECCIONAL: Solo Ticker -> Nombre */
 function onTickerInput(val) {
   const upper = (val || '').toUpperCase().trim();
   if (COMPANY_TICKERS[upper]) {
@@ -958,7 +1030,6 @@ function recalcPositionSize() {
     document.getElementById('res-capital-buy').textContent = `$${fmt(capitalBuy)}`;
     document.getElementById('res-risk-per-share').textContent = `$${fmt(riskPerShare)}`;
 
-    // Targets en R
     document.getElementById('res-target-1r').textContent = `$${fmtPrice(entry + (1 * riskPerShare))}`;
     document.getElementById('res-target-2r').textContent = `$${fmtPrice(entry + (2 * riskPerShare))}`;
     document.getElementById('res-target-3r').textContent = `$${fmtPrice(entry + (3 * riskPerShare))}`;
@@ -972,7 +1043,6 @@ function recalcPositionSize() {
     document.getElementById('res-target-3r').textContent = `—`;
   }
 
-  // Reparto Jaime
   const totalBaseEur = familyAccounts.reduce((acc, a) => acc + a.eur, 0);
   familyAccounts.forEach((acc, idx) => {
     const weight = totalBaseEur > 0 ? (acc.eur / totalBaseEur) : 0;
@@ -994,7 +1064,6 @@ function recalcPositionSize() {
     }
   });
 
-  // Validación Técnica ADR: SL no puede superar el límite
   const adrBanner = document.getElementById('adr-banner');
   if (adr > 0 && stopPct > 0) {
     adrBanner.style.display = 'flex';
@@ -1082,7 +1151,129 @@ function updateSetupOptions() {
   datalist.innerHTML = uniqueSetups.map(s => `<option value="${s}">`).join('');
 }
 
+/* ─── LÓGICA DE VENTAS PARCIALES ─── */
+function togglePartialsMode(enabled) {
+  const partialsSection = document.getElementById('partialsSection');
+  const exitInput = document.getElementById('f-exit');
+  
+  partialsSection.style.display = enabled ? 'block' : 'none';
+  exitInput.readOnly = enabled;
+  exitInput.style.opacity = enabled ? '0.75' : '1';
+  exitInput.style.background = enabled ? 'var(--bg-hover)' : 'var(--bg-secondary)';
+
+  if (enabled) {
+    if (partials.length === 0) {
+      const totalShares = parseFloat(document.getElementById('f-shares').value) || 0;
+      const part1 = totalShares > 0 ? Math.floor(totalShares / 2) : '';
+      const part2 = totalShares > 0 ? (totalShares - part1) : '';
+      partials = [
+        { shares: part1, price: '' },
+        { shares: part2, price: '' }
+      ];
+    }
+    renderPartialsList();
+    calculateFromPartials();
+  } else {
+    autoCalcularPnL();
+  }
+}
+
+function addPartialRow() {
+  partials.push({ shares: '', price: '' });
+  renderPartialsList();
+  calculateFromPartials();
+}
+
+function removePartialRow(index) {
+  if (partials.length <= 1) {
+    alert('Debe haber al menos una venta parcial si la opción está activada.');
+    return;
+  }
+  partials.splice(index, 1);
+  renderPartialsList();
+  calculateFromPartials();
+}
+
+function updatePartialValue(index, field, value) {
+  partials[index][field] = value;
+  calculateFromPartials();
+}
+
+function renderPartialsList() {
+  const container = document.getElementById('partialsList');
+  container.innerHTML = partials.map((p, idx) => `
+    <div class="partial-row">
+      <span class="partial-tag">Venta #${idx + 1}</span>
+      <input type="number" inputmode="decimal" class="form-input" placeholder="Acciones" value="${p.shares}" step="any" oninput="updatePartialValue(${idx}, 'shares', this.value)">
+      <input type="number" inputmode="decimal" class="form-input" placeholder="Precio ($)" value="${p.price}" step="0.01" oninput="updatePartialValue(${idx}, 'price', this.value)">
+      <button type="button" class="partial-del-btn" onclick="removePartialRow(${idx})" title="Eliminar parcial">✕</button>
+    </div>
+  `).join('');
+}
+
+function calculateFromPartials() {
+  const totalShares = parseFloat(document.getElementById('f-shares').value) || 0;
+  const entry = parseFloat(document.getElementById('f-entry').value) || 0;
+  const dir = document.getElementById('f-direction').value;
+
+  let sumShares = 0;
+  let sumRevenue = 0;
+  let completeRows = 0;
+
+  partials.forEach(p => {
+    const s = parseFloat(p.shares) || 0;
+    const pr = parseFloat(p.price) || 0;
+    sumShares += s;
+    if (s > 0 && pr > 0) {
+      sumRevenue += (s * pr);
+      completeRows++;
+    }
+  });
+
+  const countBadge = document.getElementById('partialsSharesCount');
+  if (countBadge) {
+    countBadge.textContent = `${sumShares} / ${totalShares} acc`;
+    countBadge.style.color = (totalShares > 0 && sumShares === totalShares) ? 'var(--green-light)' : (sumShares > totalShares ? 'var(--red)' : 'var(--text-muted)');
+  }
+
+  if (sumShares > 0 && sumRevenue > 0) {
+    const avgExit = sumRevenue / sumShares;
+    document.getElementById('f-exit').value = avgExit.toFixed(2);
+
+    let pnl = 0;
+    if (entry > 0) {
+      if (dir === 'LONG') {
+        pnl = sumRevenue - (sumShares * entry);
+      } else {
+        pnl = (sumShares * entry) - sumRevenue;
+      }
+      document.getElementById('f-pnl').value = pnl.toFixed(2);
+    }
+
+    const noteEl = document.getElementById('partialsSummaryNote');
+    if (noteEl) noteEl.textContent = `Precio medio: $${avgExit.toFixed(2)}`;
+  }
+}
+
+function onSharesInput() {
+  if (document.getElementById('f-use-partials').checked) {
+    calculateFromPartials();
+  } else {
+    autoCalcularPnL();
+  }
+}
+
+function onDirectionOrPriceChange() {
+  if (document.getElementById('f-use-partials').checked) {
+    calculateFromPartials();
+  } else {
+    autoCalcularPnL();
+  }
+}
+
 function autoCalcularPnL() {
+  if (document.getElementById('f-use-partials').checked) return;
+
   const dir = document.getElementById('f-direction').value;
   const entry = parseFloat(document.getElementById('f-entry').value);
   const exit = parseFloat(document.getElementById('f-exit').value);
@@ -1311,6 +1502,8 @@ function closeLightbox() { document.getElementById('lightbox').classList.remove(
 function openAddModal() {
   editingId = null;
   currentImage = null;
+  partials = [];
+
   document.getElementById('f-symbol').value = '';
   document.getElementById('f-setup').value = '';
   document.getElementById('f-shares').value = '';
@@ -1319,6 +1512,11 @@ function openAddModal() {
   document.getElementById('f-stop').value = '';
   document.getElementById('f-exit').value = '';
   document.getElementById('f-notes').value = '';
+  
+  const chk = document.getElementById('f-use-partials');
+  chk.checked = false;
+  togglePartialsMode(false);
+
   document.getElementById('uploadPreview').style.display = 'none';
   document.getElementById('uploadText').style.display = 'block';
   document.getElementById('addModal').classList.add('open');
@@ -1332,6 +1530,7 @@ function openEditModal(id) {
   if (!t) return;
   editingId = id;
   currentImage = t.image || null;
+  partials = [];
   
   document.getElementById('f-date').value = t.date;
   document.getElementById('f-symbol').value = t.symbol;
@@ -1343,6 +1542,10 @@ function openEditModal(id) {
   document.getElementById('f-stop').value = t.stop || '';
   document.getElementById('f-exit').value = t.exit || '';
   document.getElementById('f-notes').value = t.notes || '';
+
+  const chk = document.getElementById('f-use-partials');
+  chk.checked = false;
+  togglePartialsMode(false);
 
   if (currentImage) {
     document.getElementById('uploadPreview').src = currentImage;
@@ -1364,6 +1567,19 @@ async function saveTrade() {
   const stopVal = document.getElementById('f-stop').value;
   const exitVal = document.getElementById('f-exit').value;
   const sharesVal = document.getElementById('f-shares').value;
+  let notesVal = document.getElementById('f-notes').value.trim();
+
+  // Si se usaron parciales, documentamos el desglose en notas si no existía ya
+  const usePartials = document.getElementById('f-use-partials').checked;
+  if (usePartials && partials.length > 0) {
+    const validPartials = partials.filter(p => (parseFloat(p.shares) > 0 && parseFloat(p.price) > 0));
+    if (validPartials.length > 0) {
+      const summaryText = '[Salidas parciales: ' + validPartials.map(p => `${p.shares} acc @ $${fmtPrice(p.price)}`).join(' | ') + ']';
+      if (!notesVal.includes('[Salidas parciales:')) {
+        notesVal = notesVal ? `${notesVal}\n\n${summaryText}` : summaryText;
+      }
+    }
+  }
 
   const data = {
     date: document.getElementById('f-date').value,
@@ -1375,7 +1591,7 @@ async function saveTrade() {
     entry: entryVal !== '' ? parseFloat(entryVal) : null,
     stop: stopVal !== '' ? parseFloat(stopVal) : null,
     exit: exitVal !== '' ? parseFloat(exitVal) : null,
-    notes: document.getElementById('f-notes').value,
+    notes: notesVal,
     image: currentImage
   };
 
