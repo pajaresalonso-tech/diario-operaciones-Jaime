@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <!-- Favicon e icono para iPhone usando tu archivo real -->
+  <!-- Favicon e icono directo a logo.png -->
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="apple-touch-icon" href="logo.png">
   
@@ -14,6 +14,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
+    /* MODO OSCURO */
     :root {
       --bg-primary: #0B0E14;
       --bg-secondary: #121720;
@@ -35,9 +36,9 @@
       --text-muted: #57606A;
       --mono: 'JetBrains Mono', monospace;
       --sans: 'Space Grotesk', sans-serif;
-      --logo-arrow: #FFFFFF;
     }
 
+    /* MODO CLARO */
     body.light-theme {
       --bg-primary: #F4F6F8;
       --bg-secondary: #FFFFFF;
@@ -57,7 +58,6 @@
       --text-primary: #1F2328;
       --text-secondary: #57606A;
       --text-muted: #8C959F;
-      --logo-arrow: #1A1A1A;
     }
 
     @media (prefers-color-scheme: light) {
@@ -80,7 +80,6 @@
         --text-primary: #1F2328;
         --text-secondary: #57606A;
         --text-muted: #8C959F;
-        --logo-arrow: #1A1A1A;
       }
     }
 
@@ -88,10 +87,14 @@
     body { background: var(--bg-primary); color: var(--text-primary); font-family: var(--sans); min-height: 100vh; font-size: 14px; line-height: 1.5; transition: background 0.2s, color 0.2s; }
 
     /* ─── HEADER ─── */
-    <div class="logo">
-    <img src="./logo.png" alt="The Long Run" class="logo-img" style="width:36px; height:36px; object-fit:contain; border-radius:6px;">
-    <span class="logo-text">Diario de Operaciones | <span>The Long Run</span></span>
-    </div>
+    .header { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
+    .logo { display: flex; align-items: center; gap: 12px; }
+    .logo-img { width: 34px; height: 34px; object-fit: contain; border-radius: 6px; }
+    .logo-text { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; color: var(--text-primary); }
+    .logo-text span { color: var(--green-light); font-weight: 800; }
+    .header-actions { display: flex; align-items: center; gap: 12px; }
+    .theme-toggle-btn { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: 12px; font-weight: 600; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .header-meta { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
 
     /* ─── NAVIGATION TABS ─── */
     .container { max-width: 1400px; margin: 0 auto; padding: 1.25rem 1.5rem 3rem; }
@@ -104,7 +107,7 @@
     .tab-content.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* ─── CALCULADORA DE TAMAÑO DE POSICIÓN ─── */
+    /* ─── CALCULADORA ─── */
     .calc-container { display: grid; grid-template-columns: 1.15fr 1fr; gap: 1.25rem; }
     .calc-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
     .calc-title { font-size: 13px; font-weight: 700; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
@@ -150,6 +153,7 @@
     .calc-res-lbl { font-size: 12px; color: var(--text-secondary); }
     .calc-res-val { font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--text-primary); }
 
+    /* TARGETS AMPLIADOS */
     .calc-targets-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 0.5rem; margin-bottom: 1rem; }
     .calc-target-card { background: var(--bg-secondary); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 6px; text-align: center; }
     .calc-target-label { font-size: 14px; font-weight: 800; color: var(--text-primary); margin-bottom: 5px; letter-spacing: 0.04em; }
@@ -168,7 +172,6 @@
     .adr-banner.optimal { background: var(--green-dim); color: var(--green-light); border: 1px solid rgba(0,143,76,0.3); }
     .adr-banner.warning { background: var(--gold-dim); color: var(--gold); border: 1px solid rgba(245,166,35,0.3); }
 
-    /* ─── MODAL DESTACADOS ─── */
     .form-group.highlighted-field { background: rgba(0, 143, 76, 0.08); padding: 8px; border-radius: 8px; border: 1px solid rgba(0, 143, 76, 0.35); }
     .form-group.highlighted-field .form-label { color: var(--green-light); display: flex; justify-content: space-between; }
     .form-group.highlighted-field .form-label span.req-tag { font-size: 9px; background: var(--green); color: #fff; padding: 1px 5px; border-radius: 4px; }
@@ -280,13 +283,7 @@
 
 <header class="header">
   <div class="logo">
-    <div class="logo-mark">
-      <svg viewBox="0 0 1000 1000">
-        <path d="M635 195 H290 C220 195 165 250 165 320 V700 C165 770 220 825 290 825 H710 C780 825 835 770 835 700 V350" fill="none" stroke="#008F4C" stroke-width="75" stroke-linecap="round"/>
-        <path d="M205 765 L365 475 L465 690 L535 325 L615 495 L760 255" fill="none" stroke="var(--logo-arrow)" stroke-width="68" stroke-linecap="square" stroke-linejoin="miter"/>
-        <polygon points="835,195 655,195 655,345 715,285 775,345 835,285 775,225" fill="var(--logo-arrow)"/>
-      </svg>
-    </div>
+    <img src="logo.png" alt="The Long Run" class="logo-img" onerror="this.style.display='none'">
     <span class="logo-text">Diario de Operaciones | <span>The Long Run</span></span>
   </div>
   <div class="header-actions">
@@ -408,7 +405,7 @@
             <div class="hero-shares-num" id="res-hero-shares">0</div>
           </div>
 
-          <!-- MÉTRICAS EN PRIMER PLANO: CAPITAL TOTAL Y JAIME % -->
+          <!-- MÉTRICAS EN PRIMER PLANO -->
           <div class="metric-spotlight-grid">
             <div class="metric-spotlight-card">
               <div class="metric-spotlight-lbl">Capital Compra Total</div>
@@ -451,7 +448,7 @@
             </table>
           </div>
 
-          <!-- OBJETIVOS 1R, 2R, 3R CON TIPOGRAFÍA GRANDE -->
+          <!-- OBJETIVOS 1R, 2R, 3R GRANDES -->
           <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-secondary); margin-bottom:4px;">
             🎯 Objetivos en R (Targets)
           </div>
@@ -693,7 +690,7 @@ function fmtPrice(num) {
   return parseFloat(num).toLocaleString('es-ES', { maximumFractionDigits: 5 });
 }
 
-/* ─── GESTIÓN DE TEMA CLARO / OSCURO ─── */
+/* ─── TEMA CLARO / OSCURO ─── */
 function initTheme() {
   const saved = localStorage.getItem('tradelog_theme');
   const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
@@ -722,8 +719,8 @@ function updateThemeBtn(isLight) {
   if (btn) btn.textContent = isLight ? '🌙 Oscuro' : '☀️ Claro';
 }
 
-/* ─── DICCIONARIO BIDIRECCIONAL ─── */
-const COMPANY_TICKERS = {
+/* ─── CATÁLOGO LOCAL + DESCARGA OFICIAL UNIVERSAL SEC ─── */
+let COMPANY_TICKERS = {
   "META": "Meta Platforms Inc",
   "AAPL": "Apple Inc",
   "CAKE": "Cheesecake Factory Inc",
@@ -736,12 +733,21 @@ const COMPANY_TICKERS = {
   "MSFT": "Microsoft Corp",
   "AMZN": "Amazon.com Inc",
   "GOOGL": "Alphabet Inc",
-  "TSLA": "Tesla Inc",
-  "PLTR": "Palantir Technologies Inc",
-  "CRWD": "CrowdStrike Holdings Inc",
-  "NET": "Cloudflare Inc",
-  "DDOG": "Datadog Inc"
+  "TSLA": "Tesla Inc"
 };
+
+// Carga en segundo plano el listado completo de la SEC (~10.000 tickers y nombres)
+async function cargarBaseTickersCompleta() {
+  try {
+    const res = await fetch('https://cdn.jsdelivr.net/gh/jadchaar/sec-cik-mapper@main/mappings/stocks/ticker_to_company_name.json');
+    if (res.ok) {
+      const fullMap = await res.json();
+      COMPANY_TICKERS = { ...COMPANY_TICKERS, ...fullMap };
+    }
+  } catch (e) {
+    console.warn('Usando catálogo local.');
+  }
+}
 
 let familyAccounts = [
   { name: 'Jaime', eur: 21200 },
@@ -771,6 +777,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('currentDate').textContent = new Date().toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long' });
   renderSubaccountsTable();
   recalcPositionSize();
+  cargarBaseTickersCompleta();
   await cargarDatosDeSupabase();
 });
 
@@ -805,7 +812,7 @@ function switchTab(tabId) {
   if (tabId === 'stats') { updateStats(); renderChart(); }
 }
 
-/* Si escribe primero el TICKER -> Rellena NOMBRE */
+/* Búsqueda bidireccional */
 function onTickerInput(val) {
   const upper = (val || '').toUpperCase().trim();
   if (COMPANY_TICKERS[upper]) {
@@ -813,14 +820,12 @@ function onTickerInput(val) {
   }
 }
 
-/* Si escribe primero el NOMBRE -> Rellena TICKER */
 function onCompanyInput(val) {
   const raw = (val || '').toLowerCase().trim();
-  if (!raw) return;
+  if (!raw || raw.length < 2) return;
 
   for (const [ticker, name] of Object.entries(COMPANY_TICKERS)) {
     const cleanName = name.toLowerCase();
-    // Coincidencia si escribe el nombre completo o las primeras palabras clave
     if (cleanName.includes(raw) || raw.includes(cleanName.split(' ')[0])) {
       document.getElementById('c-ticker').value = ticker;
       break;
@@ -957,7 +962,7 @@ function recalcPositionSize() {
     document.getElementById('res-target-3r').textContent = `—`;
   }
 
-  // Reparto y cálculo exacto de Jaime
+  // Reparto Jaime
   const totalBaseEur = familyAccounts.reduce((acc, a) => acc + a.eur, 0);
   familyAccounts.forEach((acc, idx) => {
     const weight = totalBaseEur > 0 ? (acc.eur / totalBaseEur) : 0;
@@ -979,7 +984,7 @@ function recalcPositionSize() {
     }
   });
 
-  // Validación Técnica ADR: SL no puede superar el límite
+  // Validación Técnica ADR
   const adrBanner = document.getElementById('adr-banner');
   if (adr > 0 && stopPct > 0) {
     adrBanner.style.display = 'flex';
@@ -1389,7 +1394,7 @@ async function deleteTrade(id) {
   }
 }
 
-/* ─── CURVA DE EQUIDAD CON FECHAS Y COLORES ADAPTATIVOS ─── */
+/* ─── CURVA DE EQUIDAD ─── */
 function renderChart() {
   const canvas = document.getElementById('equityChart');
   const ctx = canvas.getContext('2d');
@@ -1417,7 +1422,6 @@ function renderChart() {
   const px = i => pdX + (i / (points.length - 1)) * cw;
   const py = v => pdTop + ch - ((v - min) / range) * ch;
 
-  // Fondo degradado
   const grad = ctx.createLinearGradient(0, 0, 0, H);
   const isPositive = points[points.length - 1] >= initialCapital;
   grad.addColorStop(0, isPositive ? 'rgba(0,143,76,0.22)' : 'rgba(255,71,87,0.18)');
@@ -1431,7 +1435,6 @@ function renderChart() {
   ctx.fillStyle = grad;
   ctx.fill();
 
-  // Línea de equidad
   ctx.beginPath();
   ctx.moveTo(px(0), py(points[0]));
   points.forEach((v, i) => i > 0 && ctx.lineTo(px(i), py(v)));
@@ -1439,7 +1442,6 @@ function renderChart() {
   ctx.lineWidth = 2.5; 
   ctx.stroke();
 
-  // Fechas en el eje X
   ctx.fillStyle = isLight ? '#57606A' : '#8B949E';
   ctx.font = '10px "JetBrains Mono", monospace';
   ctx.textAlign = 'center';
