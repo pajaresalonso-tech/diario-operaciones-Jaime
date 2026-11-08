@@ -88,15 +88,10 @@
     body { background: var(--bg-primary); color: var(--text-primary); font-family: var(--sans); min-height: 100vh; font-size: 14px; line-height: 1.5; transition: background 0.2s, color 0.2s; }
 
     /* ─── HEADER ─── */
-    .header { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
-    .logo { display: flex; align-items: center; gap: 12px; }
-    .logo-mark { width: 36px; height: 36px; background: transparent; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-    .logo-mark svg { width: 36px; height: 36px; }
-    .logo-text { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; color: var(--text-primary); }
-    .logo-text span { color: var(--green-light); font-weight: 800; }
-    .header-actions { display: flex; align-items: center; gap: 12px; }
-    .theme-toggle-btn { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: 12px; font-weight: 600; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; gap: 6px; }
-    .header-meta { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
+    <div class="logo">
+    <img src="./logo.png" alt="The Long Run" class="logo-img" style="width:36px; height:36px; object-fit:contain; border-radius:6px;">
+    <span class="logo-text">Diario de Operaciones | <span>The Long Run</span></span>
+    </div>
 
     /* ─── NAVIGATION TABS ─── */
     .container { max-width: 1400px; margin: 0 auto; padding: 1.25rem 1.5rem 3rem; }
