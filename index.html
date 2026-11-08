@@ -14,7 +14,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    /* PALETA POR DEFECTO: MODO OSCURO */
     :root {
       --bg-primary: #0B0E14;
       --bg-secondary: #121720;
@@ -39,7 +38,6 @@
       --logo-arrow: #FFFFFF;
     }
 
-    /* PALETA: MODO CLARO */
     body.light-theme {
       --bg-primary: #F4F6F8;
       --bg-secondary: #FFFFFF;
@@ -157,7 +155,6 @@
     .calc-res-lbl { font-size: 12px; color: var(--text-secondary); }
     .calc-res-val { font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--text-primary); }
 
-    /* TARGETS AMPLIADOS Y DESTACADOS */
     .calc-targets-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 0.5rem; margin-bottom: 1rem; }
     .calc-target-card { background: var(--bg-secondary); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 6px; text-align: center; }
     .calc-target-label { font-size: 14px; font-weight: 800; color: var(--text-primary); margin-bottom: 5px; letter-spacing: 0.04em; }
@@ -289,13 +286,9 @@
 <header class="header">
   <div class="logo">
     <div class="logo-mark">
-      <!-- Icono The Long Run con trazo vectorial idéntico al manual de marca -->
       <svg viewBox="0 0 1000 1000">
-        <!-- Marco verde con corte superior derecho -->
         <path d="M635 195 H290 C220 195 165 250 165 320 V700 C165 770 220 825 290 825 H710 C780 825 835 770 835 700 V350" fill="none" stroke="#008F4C" stroke-width="75" stroke-linecap="round"/>
-        <!-- Flecha quebrada que cruza en diagonal -->
         <path d="M205 765 L365 475 L465 690 L535 325 L615 495 L760 255" fill="none" stroke="var(--logo-arrow)" stroke-width="68" stroke-linecap="square" stroke-linejoin="miter"/>
-        <!-- Punta de flecha superior derecha -->
         <polygon points="835,195 655,195 655,345 715,285 775,345 835,285 775,225" fill="var(--logo-arrow)"/>
       </svg>
     </div>
@@ -339,7 +332,7 @@
           </div>
           <div class="calc-group">
             <label class="calc-label">Nombre Empresa</label>
-            <input type="text" id="c-company" class="calc-input" placeholder="Ej: Meta Platforms Inc">
+            <input type="text" id="c-company" class="calc-input" placeholder="Meta Platforms, Apple" oninput="onCompanyInput(this.value)">
           </div>
 
           <div class="calc-group">
@@ -734,6 +727,7 @@ function updateThemeBtn(isLight) {
   if (btn) btn.textContent = isLight ? '🌙 Oscuro' : '☀️ Claro';
 }
 
+/* ─── DICCIONARIO BIDIRECCIONAL ─── */
 const COMPANY_TICKERS = {
   "META": "Meta Platforms Inc",
   "AAPL": "Apple Inc",
@@ -816,10 +810,26 @@ function switchTab(tabId) {
   if (tabId === 'stats') { updateStats(); renderChart(); }
 }
 
+/* Si escribe primero el TICKER -> Rellena NOMBRE */
 function onTickerInput(val) {
   const upper = (val || '').toUpperCase().trim();
   if (COMPANY_TICKERS[upper]) {
     document.getElementById('c-company').value = COMPANY_TICKERS[upper];
+  }
+}
+
+/* Si escribe primero el NOMBRE -> Rellena TICKER */
+function onCompanyInput(val) {
+  const raw = (val || '').toLowerCase().trim();
+  if (!raw) return;
+
+  for (const [ticker, name] of Object.entries(COMPANY_TICKERS)) {
+    const cleanName = name.toLowerCase();
+    // Coincidencia si escribe el nombre completo o las primeras palabras clave
+    if (cleanName.includes(raw) || raw.includes(cleanName.split(' ')[0])) {
+      document.getElementById('c-ticker').value = ticker;
+      break;
+    }
   }
 }
 
@@ -989,7 +999,6 @@ function recalcPositionSize() {
         adrBanner.innerHTML = `✅ <strong>Stop válido para Trade</strong> (${fmt(stopPct)}% ≤ 0,5×ADR: ${fmt(maxAllowedTrade)}%).`;
       }
     } else {
-      // SWING
       const maxAllowedSwing = 1.5 * adr;
       if (stopPct > maxAllowedSwing) {
         adrBanner.className = 'adr-banner warning';
