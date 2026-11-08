@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <!-- Favicon de alto contraste con fondo blanco y trazo grueso TLR -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000'><rect width='1000' height='1000' rx='220' fill='%23FFFFFF'/><path d='M654 186 H300 C217 186 150 253 150 336 V700 C150 783 217 850 300 850 H700 C783 850 850 783 850 700 V358' fill='none' stroke='%23008F4C' stroke-width='75' stroke-linecap='round'/><path d='M195 775 L350 470 L462 700 L538 320 L610 500 L745 270' fill='none' stroke='%23111827' stroke-width='70' stroke-linecap='round' stroke-linejoin='miter'/><polygon points='814,186 654,186 654,342 708,288 760,340 814,286 760,234' fill='%23111827'/></svg>">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000'><rect width='1000' height='1000' rx='220' fill='%23FFFFFF'/><path d='M654 186 H300 C217 186 150 253 150 336 V700 C150 783 217 850 300 850 H700 C783 850 850 783 850 700 V358' fill='none' stroke='%23008F4C' stroke-width='75' stroke-linecap='round'/><path d='M195 775 L350 470 L462 700 L538 320 L610 500 L745 270' fill='none' stroke='%23111827' stroke-width='70' stroke-linecap='round' stroke-linejoin='miter'/><polygon points='814,186 654,186 654,342 708,288 760,340 814,286 760,234' fill='%23111827'/></svg>">
+  <!-- Favicon de alto contraste calcado exacto de TLR -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000'><rect width='1000' height='1000' rx='220' fill='%23FFFFFF'/><path d='M635 195 H290 C220 195 165 250 165 320 V700 C165 770 220 825 290 825 H710 C780 825 835 770 835 700 V350' fill='none' stroke='%23008F4C' stroke-width='75' stroke-linecap='round'/><path d='M205 765 L365 475 L465 690 L535 325 L615 495 L760 255' fill='none' stroke='%231A1A1A' stroke-width='68' stroke-linecap='square' stroke-linejoin='miter'/><polygon points='835,195 655,195 655,345 715,285 775,345 835,285 775,225' fill='%231A1A1A'/></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000'><rect width='1000' height='1000' rx='220' fill='%23FFFFFF'/><path d='M635 195 H290 C220 195 165 250 165 320 V700 C165 770 220 825 290 825 H710 C780 825 835 770 835 700 V350' fill='none' stroke='%23008F4C' stroke-width='75' stroke-linecap='round'/><path d='M205 765 L365 475 L465 690 L535 325 L615 495 L760 255' fill='none' stroke='%231A1A1A' stroke-width='68' stroke-linecap='square' stroke-linejoin='miter'/><polygon points='835,195 655,195 655,345 715,285 775,345 835,285 775,225' fill='%231A1A1A'/></svg>">
   
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -36,9 +36,10 @@
       --text-muted: #57606A;
       --mono: 'JetBrains Mono', monospace;
       --sans: 'Space Grotesk', sans-serif;
+      --logo-arrow: #FFFFFF;
     }
 
-    /* PALETA: MODO CLARO (SUAVE, SIN DESLUMBRAMIENTOS) */
+    /* PALETA: MODO CLARO */
     body.light-theme {
       --bg-primary: #F4F6F8;
       --bg-secondary: #FFFFFF;
@@ -58,6 +59,7 @@
       --text-primary: #1F2328;
       --text-secondary: #57606A;
       --text-muted: #8C959F;
+      --logo-arrow: #1A1A1A;
     }
 
     @media (prefers-color-scheme: light) {
@@ -80,6 +82,7 @@
         --text-primary: #1F2328;
         --text-secondary: #57606A;
         --text-muted: #8C959F;
+        --logo-arrow: #1A1A1A;
       }
     }
 
@@ -88,9 +91,9 @@
 
     /* ─── HEADER ─── */
     .header { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
-    .logo { display: flex; align-items: center; gap: 10px; }
-    .logo-mark { width: 34px; height: 34px; background: transparent; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-    .logo-mark svg { width: 34px; height: 34px; }
+    .logo { display: flex; align-items: center; gap: 12px; }
+    .logo-mark { width: 36px; height: 36px; background: transparent; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .logo-mark svg { width: 36px; height: 36px; }
     .logo-text { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; color: var(--text-primary); }
     .logo-text span { color: var(--green-light); font-weight: 800; }
     .header-actions { display: flex; align-items: center; gap: 12px; }
@@ -286,10 +289,14 @@
 <header class="header">
   <div class="logo">
     <div class="logo-mark">
+      <!-- Icono The Long Run con trazo vectorial idéntico al manual de marca -->
       <svg viewBox="0 0 1000 1000">
-        <path d="M654 186 H300 C217 186 150 253 150 336 V700 C150 783 217 850 300 850 H700 C783 850 850 783 850 700 V358" fill="none" stroke="#008F4C" stroke-width="50" stroke-linecap="round"/>
-        <path d="M195 775 L350 470 L462 700 L538 320 L610 500 L745 270" fill="none" stroke="currentColor" stroke-width="46" stroke-linecap="round" stroke-linejoin="miter"/>
-        <polygon points="814,186 654,186 654,342 708,288 760,340 814,286 760,234" fill="currentColor"/>
+        <!-- Marco verde con corte superior derecho -->
+        <path d="M635 195 H290 C220 195 165 250 165 320 V700 C165 770 220 825 290 825 H710 C780 825 835 770 835 700 V350" fill="none" stroke="#008F4C" stroke-width="75" stroke-linecap="round"/>
+        <!-- Flecha quebrada que cruza en diagonal -->
+        <path d="M205 765 L365 475 L465 690 L535 325 L615 495 L760 255" fill="none" stroke="var(--logo-arrow)" stroke-width="68" stroke-linecap="square" stroke-linejoin="miter"/>
+        <!-- Punta de flecha superior derecha -->
+        <polygon points="835,195 655,195 655,345 715,285 775,345 835,285 775,225" fill="var(--logo-arrow)"/>
       </svg>
     </div>
     <span class="logo-text">Diario de Operaciones | <span>The Long Run</span></span>
@@ -982,6 +989,7 @@ function recalcPositionSize() {
         adrBanner.innerHTML = `✅ <strong>Stop válido para Trade</strong> (${fmt(stopPct)}% ≤ 0,5×ADR: ${fmt(maxAllowedTrade)}%).`;
       }
     } else {
+      // SWING
       const maxAllowedSwing = 1.5 * adr;
       if (stopPct > maxAllowedSwing) {
         adrBanner.className = 'adr-banner warning';
