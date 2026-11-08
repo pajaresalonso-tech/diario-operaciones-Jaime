@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000'><rect width='1000' height='1000' rx='220' fill='%230D1117'/><path d='M654 186 H300 C217 186 150 253 150 336 V700 C150 783 217 850 300 850 H700 C783 850 850 783 850 700 V358' fill='none' stroke='%23008F4C' stroke-width='44' stroke-linecap='round'/><path d='M195 775 L350 470 L462 700 L538 320 L610 500 L745 270' fill='none' stroke='%23008F4C' stroke-width='42' stroke-linecap='round' stroke-linejoin='miter'/><polygon points='814,186 654,186 654,342 708,288 760,340 814,286 760,234' fill='%23008F4C'/></svg>">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000'><rect width='1000' height='1000' rx='220' fill='%230D1117'/><path d='M654 186 H300 C217 186 150 253 150 336 V700 C150 783 217 850 300 850 H700 C783 850 850 783 850 700 V358' fill='none' stroke='%23008F4C' stroke-width='44' stroke-linecap='round'/><path d='M195 775 L350 470 L462 700 L538 320 L610 500 L745 270' fill='none' stroke='%23008F4C' stroke-width='42' stroke-linecap='round' stroke-linejoin='miter'/><polygon points='814,186 654,186 654,342 708,288 760,340 814,286 760,234' fill='%23008F4C'/></svg>">
+  <!-- Favicon de alto contraste con fondo blanco y trazo grueso TLR -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000'><rect width='1000' height='1000' rx='220' fill='%23FFFFFF'/><path d='M654 186 H300 C217 186 150 253 150 336 V700 C150 783 217 850 300 850 H700 C783 850 850 783 850 700 V358' fill='none' stroke='%23008F4C' stroke-width='75' stroke-linecap='round'/><path d='M195 775 L350 470 L462 700 L538 320 L610 500 L745 270' fill='none' stroke='%23111827' stroke-width='70' stroke-linecap='round' stroke-linejoin='miter'/><polygon points='814,186 654,186 654,342 708,288 760,340 814,286 760,234' fill='%23111827'/></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000'><rect width='1000' height='1000' rx='220' fill='%23FFFFFF'/><path d='M654 186 H300 C217 186 150 253 150 336 V700 C150 783 217 850 300 850 H700 C783 850 850 783 850 700 V358' fill='none' stroke='%23008F4C' stroke-width='75' stroke-linecap='round'/><path d='M195 775 L350 470 L462 700 L538 320 L610 500 L745 270' fill='none' stroke='%23111827' stroke-width='70' stroke-linecap='round' stroke-linejoin='miter'/><polygon points='814,186 654,186 654,342 708,288 760,340 814,286 760,234' fill='%23111827'/></svg>">
   
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>TradeLog — The Long Run</title>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Diario de Operaciones — The Long Run</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
+    /* PALETA POR DEFECTO: MODO OSCURO */
     :root {
       --bg-primary: #0B0E14;
       --bg-secondary: #121720;
@@ -36,17 +38,64 @@
       --sans: 'Space Grotesk', sans-serif;
     }
 
+    /* PALETA: MODO CLARO (SUAVE, SIN DESLUMBRAMIENTOS) */
+    body.light-theme {
+      --bg-primary: #F4F6F8;
+      --bg-secondary: #FFFFFF;
+      --bg-card: #FFFFFF;
+      --bg-hover: #E9ECEF;
+      --border: #D0D7DE;
+      --border-subtle: #E1E4E8;
+      --green: #008F4C;
+      --green-light: #007A3E;
+      --green-dim: rgba(0, 143, 76, 0.10);
+      --red: #D73A49;
+      --red-dim: rgba(215, 58, 73, 0.10);
+      --gold: #B07200;
+      --gold-dim: rgba(176, 114, 0, 0.10);
+      --blue: #0969DA;
+      --blue-dim: rgba(9, 105, 218, 0.08);
+      --text-primary: #1F2328;
+      --text-secondary: #57606A;
+      --text-muted: #8C959F;
+    }
+
+    @media (prefers-color-scheme: light) {
+      body:not(.dark-theme) {
+        --bg-primary: #F4F6F8;
+        --bg-secondary: #FFFFFF;
+        --bg-card: #FFFFFF;
+        --bg-hover: #E9ECEF;
+        --border: #D0D7DE;
+        --border-subtle: #E1E4E8;
+        --green: #008F4C;
+        --green-light: #007A3E;
+        --green-dim: rgba(0, 143, 76, 0.10);
+        --red: #D73A49;
+        --red-dim: rgba(215, 58, 73, 0.10);
+        --gold: #B07200;
+        --gold-dim: rgba(176, 114, 0, 0.10);
+        --blue: #0969DA;
+        --blue-dim: rgba(9, 105, 218, 0.08);
+        --text-primary: #1F2328;
+        --text-secondary: #57606A;
+        --text-muted: #8C959F;
+      }
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body { background: var(--bg-primary); color: var(--text-primary); font-family: var(--sans); min-height: 100vh; font-size: 14px; line-height: 1.5; }
+    body { background: var(--bg-primary); color: var(--text-primary); font-family: var(--sans); min-height: 100vh; font-size: 14px; line-height: 1.5; transition: background 0.2s, color 0.2s; }
 
     /* ─── HEADER ─── */
     .header { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
     .logo { display: flex; align-items: center; gap: 10px; }
-    .logo-mark { width: 32px; height: 32px; background: transparent; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-    .logo-mark svg { width: 32px; height: 32px; }
-    .logo-text { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; color: var(--text-primary); }
-    .logo-text span { color: var(--green-light); }
-    .header-meta { font-family: var(--mono); font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 12px; }
+    .logo-mark { width: 34px; height: 34px; background: transparent; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .logo-mark svg { width: 34px; height: 34px; }
+    .logo-text { font-size: 16px; font-weight: 700; letter-spacing: -0.3px; color: var(--text-primary); }
+    .logo-text span { color: var(--green-light); font-weight: 800; }
+    .header-actions { display: flex; align-items: center; gap: 12px; }
+    .theme-toggle-btn { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: 12px; font-weight: 600; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .header-meta { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
 
     /* ─── NAVIGATION TABS ─── */
     .container { max-width: 1400px; margin: 0 auto; padding: 1.25rem 1.5rem 3rem; }
@@ -61,12 +110,12 @@
 
     /* ─── CALCULADORA DE TAMAÑO DE POSICIÓN ─── */
     .calc-container { display: grid; grid-template-columns: 1.15fr 1fr; gap: 1.25rem; }
-    .calc-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
+    .calc-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
     .calc-title { font-size: 13px; font-weight: 700; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
     
     .op-toggle { display: inline-flex; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; padding: 2px; }
     .op-toggle-btn { background: transparent; border: none; color: var(--text-muted); padding: 6px 14px; font-size: 12px; font-weight: 700; font-family: var(--mono); cursor: pointer; border-radius: 6px; transition: all 0.2s; }
-    .op-toggle-btn.active { background: var(--green); color: #fff; box-shadow: 0 2px 6px rgba(0,143,76,0.3); }
+    .op-toggle-btn.active { background: var(--green); color: #fff; box-shadow: 0 2px 6px rgba(0,143,76,0.25); }
 
     .calc-form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.85rem; }
     .calc-group { display: flex; flex-direction: column; gap: 5px; }
@@ -89,9 +138,9 @@
     .calc-input:focus, .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--green-light); }
     .calc-suffix { position: absolute; right: 12px; font-size: 11px; color: var(--text-muted); font-family: var(--mono); pointer-events: none; }
 
-    .hero-shares-box { background: linear-gradient(145deg, rgba(0, 143, 76, 0.16), var(--bg-secondary)); border: 2px solid var(--green); border-radius: 12px; padding: 1.1rem; text-align: center; margin-bottom: 0.85rem; box-shadow: 0 4px 14px rgba(0,143,76,0.15); }
+    .hero-shares-box { background: linear-gradient(145deg, rgba(0, 143, 76, 0.16), var(--bg-secondary)); border: 2px solid var(--green); border-radius: 12px; padding: 1.1rem; text-align: center; margin-bottom: 0.85rem; }
     .hero-shares-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--green-light); margin-bottom: 4px; }
-    .hero-shares-num { font-family: var(--mono); font-size: 36px; font-weight: 800; color: #FFFFFF; line-height: 1.1; letter-spacing: -0.5px; }
+    .hero-shares-num { font-family: var(--mono); font-size: 38px; font-weight: 800; color: var(--text-primary); line-height: 1.1; letter-spacing: -0.5px; }
 
     .metric-spotlight-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 0.85rem; }
     .metric-spotlight-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; }
@@ -105,10 +154,11 @@
     .calc-res-lbl { font-size: 12px; color: var(--text-secondary); }
     .calc-res-val { font-family: var(--mono); font-size: 14px; font-weight: 600; color: var(--text-primary); }
 
-    .calc-targets-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 0.5rem; margin-bottom: 1rem; }
-    .calc-target-card { background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 10px 6px; text-align: center; }
-    .calc-target-label { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
-    .calc-target-val { font-family: var(--mono); font-size: 18px; font-weight: 700; color: var(--green-light); }
+    /* TARGETS AMPLIADOS Y DESTACADOS */
+    .calc-targets-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 0.5rem; margin-bottom: 1rem; }
+    .calc-target-card { background: var(--bg-secondary); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 6px; text-align: center; }
+    .calc-target-label { font-size: 14px; font-weight: 800; color: var(--text-primary); margin-bottom: 5px; letter-spacing: 0.04em; }
+    .calc-target-val { font-family: var(--mono); font-size: 22px; font-weight: 800; color: var(--green-light); }
 
     .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .accounts-table { width: 100%; border-collapse: collapse; margin-top: 4px; font-size: 12px; min-width: 320px; }
@@ -190,7 +240,7 @@
     .action-btn { background: transparent; border: none; font-size: 14px; cursor: pointer; margin-right: 5px; opacity: 0.7; padding: 4px; }
 
     /* ─── MODAL ─── */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); z-index: 200; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(4px); z-index: 200; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .modal-overlay.open { opacity: 1; pointer-events: all; }
     .modal { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px 16px 0 0; width: 100%; max-width: 750px; max-height: 92vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .modal-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: var(--bg-card); z-index: 10; }
@@ -206,7 +256,7 @@
     .upload-preview { width: 100%; max-height: 180px; object-fit: cover; border-radius: 6px; display: none; margin-top: 8px; }
     .modal-footer { padding: 1rem 1.25rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; position: sticky; bottom: 0; background: var(--bg-card); }
 
-    .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.94); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; }
+    .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; }
     .lightbox.open { opacity: 1; pointer-events: all; }
     .lightbox img { max-width: 92vw; max-height: 85vh; border-radius: 8px; border: 1px solid var(--border); }
     .lightbox-close { position: absolute; top: 1rem; right: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); padding: 8px 14px; cursor: pointer; font-size: 13px; }
@@ -237,15 +287,18 @@
   <div class="logo">
     <div class="logo-mark">
       <svg viewBox="0 0 1000 1000">
-        <path d="M654 186 H300 C217 186 150 253 150 336 V700 C150 783 217 850 300 850 H700 C783 850 850 783 850 700 V358" fill="none" stroke="#008F4C" stroke-width="48" stroke-linecap="round"/>
-        <path d="M195 775 L350 470 L462 700 L538 320 L610 500 L745 270" fill="none" stroke="#FFFFFF" stroke-width="44" stroke-linecap="round" stroke-linejoin="miter"/>
-        <polygon points="814,186 654,186 654,342 708,288 760,340 814,286 760,234" fill="#FFFFFF"/>
+        <path d="M654 186 H300 C217 186 150 253 150 336 V700 C150 783 217 850 300 850 H700 C783 850 850 783 850 700 V358" fill="none" stroke="#008F4C" stroke-width="50" stroke-linecap="round"/>
+        <path d="M195 775 L350 470 L462 700 L538 320 L610 500 L745 270" fill="none" stroke="currentColor" stroke-width="46" stroke-linecap="round" stroke-linejoin="miter"/>
+        <polygon points="814,186 654,186 654,342 708,288 760,340 814,286 760,234" fill="currentColor"/>
       </svg>
     </div>
-    <span class="logo-text">Trade<span>Log</span></span>
+    <span class="logo-text">Diario de Operaciones | <span>The Long Run</span></span>
   </div>
-  <div class="header-meta">
-    <span id="currentDate">—</span>
+  <div class="header-actions">
+    <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()">☀️ Claro</button>
+    <div class="header-meta">
+      <span id="currentDate">—</span>
+    </div>
   </div>
 </header>
 
@@ -347,7 +400,7 @@
         </div>
       </div>
 
-      <!-- RESULTADOS + SUBCUENTAS + TARGETS -->
+      <!-- RESULTADOS + SUBCUENTAS + TARGETS GRANDES -->
       <div class="calc-card" style="display:flex; flex-direction:column; justify-content:space-between;">
         <div>
           <div class="calc-title">
@@ -403,7 +456,7 @@
             </table>
           </div>
 
-          <!-- OBJETIVOS 1R, 2R, 3R GRANDES -->
+          <!-- OBJETIVOS 1R, 2R, 3R CON TIPOGRAFÍA GRANDE -->
           <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-secondary); margin-bottom:4px;">
             🎯 Objetivos en R (Targets)
           </div>
@@ -645,6 +698,35 @@ function fmtPrice(num) {
   return parseFloat(num).toLocaleString('es-ES', { maximumFractionDigits: 5 });
 }
 
+/* ─── GESTIÓN DE TEMA CLARO / OSCURO ─── */
+function initTheme() {
+  const saved = localStorage.getItem('tradelog_theme');
+  const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+  
+  if (saved === 'light' || (!saved && prefersLight)) {
+    document.body.classList.add('light-theme');
+    document.body.classList.remove('dark-theme');
+    updateThemeBtn(true);
+  } else {
+    document.body.classList.add('dark-theme');
+    document.body.classList.remove('light-theme');
+    updateThemeBtn(false);
+  }
+}
+
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light-theme');
+  document.body.classList.toggle('dark-theme', !isLight);
+  localStorage.setItem('tradelog_theme', isLight ? 'light' : 'dark');
+  updateThemeBtn(isLight);
+  if (document.getElementById('tab-stats').classList.contains('active')) renderChart();
+}
+
+function updateThemeBtn(isLight) {
+  const btn = document.getElementById('themeToggleBtn');
+  if (btn) btn.textContent = isLight ? '🌙 Oscuro' : '☀️ Claro';
+}
+
 const COMPANY_TICKERS = {
   "META": "Meta Platforms Inc",
   "AAPL": "Apple Inc",
@@ -688,6 +770,7 @@ const monthNames = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct",
 const fullMonthNames = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 
 document.addEventListener('DOMContentLoaded', async () => {
+  initTheme();
   document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
   document.getElementById('currentDate').textContent = new Date().toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long' });
   renderSubaccountsTable();
@@ -884,7 +967,7 @@ function recalcPositionSize() {
     }
   });
 
-  // Validación Técnica ADR Estricta (SL no puede superar el límite)
+  // Validación Técnica ADR: SL no puede superar el límite
   const adrBanner = document.getElementById('adr-banner');
   if (adr > 0 && stopPct > 0) {
     adrBanner.style.display = 'flex';
@@ -899,7 +982,6 @@ function recalcPositionSize() {
         adrBanner.innerHTML = `✅ <strong>Stop válido para Trade</strong> (${fmt(stopPct)}% ≤ 0,5×ADR: ${fmt(maxAllowedTrade)}%).`;
       }
     } else {
-      // SWING
       const maxAllowedSwing = 1.5 * adr;
       if (stopPct > maxAllowedSwing) {
         adrBanner.className = 'adr-banner warning';
@@ -1295,11 +1377,12 @@ async function deleteTrade(id) {
   }
 }
 
-/* ─── CURVA DE EQUIDAD CON FECHAS EN EL EJE X ─── */
+/* ─── CURVA DE EQUIDAD CON FECHAS Y COLORES ADAPTATIVOS ─── */
 function renderChart() {
   const canvas = document.getElementById('equityChart');
   const ctx = canvas.getContext('2d');
   const closed = computedTrades.filter(t => t.pnl !== '' && t.pnl !== null);
+  const isLight = document.body.classList.contains('light-theme');
   
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   if (closed.length < 1) return;
@@ -1322,9 +1405,10 @@ function renderChart() {
   const px = i => pdX + (i / (points.length - 1)) * cw;
   const py = v => pdTop + ch - ((v - min) / range) * ch;
 
+  // Fondo degradado
   const grad = ctx.createLinearGradient(0, 0, 0, H);
   const isPositive = points[points.length - 1] >= initialCapital;
-  grad.addColorStop(0, isPositive ? 'rgba(0,143,76,0.25)' : 'rgba(255,71,87,0.2)');
+  grad.addColorStop(0, isPositive ? 'rgba(0,143,76,0.22)' : 'rgba(255,71,87,0.18)');
   grad.addColorStop(1, 'rgba(0,0,0,0)');
 
   ctx.beginPath();
@@ -1335,14 +1419,16 @@ function renderChart() {
   ctx.fillStyle = grad;
   ctx.fill();
 
+  // Línea de equidad
   ctx.beginPath();
   ctx.moveTo(px(0), py(points[0]));
   points.forEach((v, i) => i > 0 && ctx.lineTo(px(i), py(v)));
-  ctx.strokeStyle = isPositive ? '#00B35F' : '#FF4757';
+  ctx.strokeStyle = isPositive ? (isLight ? '#007A3E' : '#00B35F') : (isLight ? '#D73A49' : '#FF4757');
   ctx.lineWidth = 2.5; 
   ctx.stroke();
 
-  ctx.fillStyle = '#8B949E';
+  // Fechas en el eje X
+  ctx.fillStyle = isLight ? '#57606A' : '#8B949E';
   ctx.font = '10px "JetBrains Mono", monospace';
   ctx.textAlign = 'center';
 
@@ -1354,7 +1440,7 @@ function renderChart() {
     ctx.beginPath();
     ctx.moveTo(x, pdTop + ch);
     ctx.lineTo(x, pdTop + ch + 4);
-    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.strokeStyle = isLight ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.15)';
     ctx.stroke();
   }
 
