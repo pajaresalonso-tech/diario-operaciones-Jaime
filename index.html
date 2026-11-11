@@ -739,8 +739,8 @@
         </div>
       </div>
 
-      <!-- PARÁMETROS CLAVE DEL TRADE (SIN DISTANCIA 1R) -->
-      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
+      <!-- PARÁMETROS CLAVE DEL TRADE (INCLUYENDO % RIESGO ASUMIDO) -->
+      <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:8px;">
         <div class="metric-spotlight-card">
           <div class="metric-spotlight-lbl">Entrada</div>
           <div class="metric-spotlight-val" id="info-entry" style="font-size:16px;">—</div>
@@ -752,6 +752,10 @@
         <div class="metric-spotlight-card">
           <div class="metric-spotlight-lbl">% Stop</div>
           <div class="metric-spotlight-val" id="info-stop-pct" style="font-size:16px; color:var(--red);">—</div>
+        </div>
+        <div class="metric-spotlight-card">
+          <div class="metric-spotlight-lbl">% Riesgo Asumido</div>
+          <div class="metric-spotlight-val" id="info-risk-assumed" style="font-size:16px; color:var(--gold);">—</div>
         </div>
       </div>
 
@@ -1439,11 +1443,21 @@ function openInfoModal(id) {
   document.getElementById('info-entry').textContent = entry > 0 ? `$${fmtPrice(entry)}` : '—';
   document.getElementById('info-stop').textContent = stop > 0 ? `$${fmtPrice(stop)}` : '—';
 
-  // Targets según stop
+  // Targets según stop y % de riesgo asumido sobre cartera de Jaime
   const riskUnit = Math.abs(entry - stop);
   if (entry > 0 && stop > 0 && riskUnit > 0) {
     const stopPct = (riskUnit / entry) * 100;
     document.getElementById('info-stop-pct').textContent = `-${fmt(stopPct)}%`;
+
+    // % Riesgo Asumido (1R Monetario = Títulos × Riesgo Unitario frente al capital de Jaime)
+    const jaimeCapUsd = initialCapital * currentFxRate;
+    if (shares > 0 && jaimeCapUsd > 0) {
+      const riskMonetary = shares * riskUnit;
+      const riskAssumedPct = (riskMonetary / jaimeCapUsd) * 100;
+      document.getElementById('info-risk-assumed').textContent = `${fmt(riskAssumedPct)}% (1R)`;
+    } else {
+      document.getElementById('info-risk-assumed').textContent = '—';
+    }
 
     if (isLong) {
       document.getElementById('info-target-1r').textContent = `$${fmtPrice(entry + (1 * riskUnit))}`;
@@ -1456,6 +1470,7 @@ function openInfoModal(id) {
     }
   } else {
     document.getElementById('info-stop-pct').textContent = '—';
+    document.getElementById('info-risk-assumed').textContent = '—';
     document.getElementById('info-target-1r').textContent = '—';
     document.getElementById('info-target-2r').textContent = '—';
     document.getElementById('info-target-3r').textContent = '—';
