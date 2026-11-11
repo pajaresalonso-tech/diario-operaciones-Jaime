@@ -91,8 +91,7 @@
     .logo-text span { color: var(--green-light); font-weight: 800; }
     .header-actions { display: flex; align-items: center; gap: 12px; }
     .theme-toggle-btn { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; font-size: 12px; font-weight: 600; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; gap: 6px; }
-    .header-meta { font-family: var(--mono); font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 10px; }
-    .fx-tag { background: var(--bg-card); border: 1px solid var(--border); padding: 3px 7px; border-radius: 6px; color: var(--green-light); }
+    .header-meta { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
 
     /* ─── NAVIGATION TABS ─── */
     .container { max-width: 1400px; margin: 0 auto; padding: 1.25rem 1.5rem 3rem; }
@@ -298,7 +297,6 @@
   <div class="header-actions">
     <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()">☀️ Claro</button>
     <div class="header-meta">
-      <span class="fx-tag" id="fxRateBadge">EUR/USD: …</span>
       <span id="currentDate">—</span>
     </div>
   </div>
@@ -716,7 +714,7 @@
   </div>
 </div>
 
-<!-- NUEVO MODAL: FICHA TÉCNICA Y OBJETIVOS EN R -->
+<!-- MODAL: FICHA TÉCNICA Y OBJETIVOS EN R -->
 <div class="modal-overlay" id="infoModal" onclick="closeInfoModalIfOverlay(event)">
   <div class="modal" style="max-width: 620px;">
     <div class="modal-header">
@@ -741,8 +739,8 @@
         </div>
       </div>
 
-      <!-- PARÁMETROS CLAVE DEL TRADE -->
-      <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:8px;">
+      <!-- PARÁMETROS CLAVE DEL TRADE (SIN DISTANCIA 1R) -->
+      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
         <div class="metric-spotlight-card">
           <div class="metric-spotlight-lbl">Entrada</div>
           <div class="metric-spotlight-val" id="info-entry" style="font-size:16px;">—</div>
@@ -752,16 +750,12 @@
           <div class="metric-spotlight-val" id="info-stop" style="font-size:16px; color:var(--red);">—</div>
         </div>
         <div class="metric-spotlight-card">
-          <div class="metric-spotlight-lbl">Distancia 1R</div>
-          <div class="metric-spotlight-val" id="info-risk-usd" style="font-size:16px;">—</div>
-        </div>
-        <div class="metric-spotlight-card">
           <div class="metric-spotlight-lbl">% Stop</div>
           <div class="metric-spotlight-val" id="info-stop-pct" style="font-size:16px; color:var(--red);">—</div>
         </div>
       </div>
 
-      <!-- TARJETAS DE TARGETS EN R GRANDES -->
+      <!-- TARGETS EN R GRANDES -->
       <div>
         <div style="font-size:11px; font-weight:700; text-transform:uppercase; color:var(--text-secondary); margin-bottom:6px;">
           🎯 Niveles de Salida en R (Targets)
@@ -808,7 +802,7 @@
         <div id="info-notes" style="white-space: pre-wrap;">Sin notas añadidas.</div>
       </div>
 
-      <!-- BOTÓN VER GRÁFICO SI EXISTE -->
+      <!-- VER GRÁFICO SI EXISTE -->
       <div id="infoChartBtnContainer" style="display:none;">
         <button class="btn btn-ghost" id="infoViewChartBtn" style="width:100%;">
           🖼️ Ver Gráfico Registrado en Pantalla Completa
@@ -899,26 +893,6 @@ async function cargarBaseTickersCompleta() {
   }
 }
 
-/* ─── ACTUALIZACIÓN DINÁMICA DEL TIPO DE CAMBIO (EUR/USD) ─── */
-async function actualizarTipoDeCambio() {
-  const fxBadge = document.getElementById('fxRateBadge');
-  try {
-    const res = await fetch('https://api.frankfurter.dev/v1/latest?base=EUR&symbols=USD');
-    if (res.ok) {
-      const data = await res.json();
-      if (data && data.rates && data.rates.USD) {
-        currentFxRate = parseFloat(data.rates.USD);
-        if (fxBadge) fxBadge.textContent = `EUR/USD: ${currentFxRate.toFixed(4)}`;
-        updateTotalFromSubaccounts();
-        return;
-      }
-    }
-  } catch (err) {
-    console.warn('No se pudo obtener el tipo de cambio en vivo, usando ratio base:', err);
-  }
-  if (fxBadge) fxBadge.textContent = `EUR/USD: ${currentFxRate.toFixed(4)}`;
-}
-
 let familyAccounts = [
   { name: 'Jaime', eur: 21200 },
   { name: 'Irene', eur: 6000 },
@@ -927,7 +901,7 @@ let familyAccounts = [
 ];
 
 let initialCapital = familyAccounts[0].eur;
-let currentFxRate = 42810 / 38400;
+let currentFxRate = 42810 / 38400; // Ratio base original
 let currentOpType = 'TRADE';
 let computedJaimeShares = 0;
 let trades = [];
@@ -949,7 +923,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderSubaccountsTable();
   recalcPositionSize();
   cargarBaseTickersCompleta();
-  await actualizarTipoDeCambio();
   await cargarDatosDeSupabase();
 });
 
@@ -1051,8 +1024,6 @@ function onCalcCapitalUsdChange() {
   const usd = parseFloat(document.getElementById('c-cap-usd').value) || 0;
   const eur = parseFloat(document.getElementById('c-cap-eur').value) || 0;
   if (eur > 0) currentFxRate = usd / eur;
-  const fxBadge = document.getElementById('fxRateBadge');
-  if (fxBadge) fxBadge.textContent = `EUR/USD: ${currentFxRate.toFixed(4)}`;
   recalcPositionSize();
 }
 
@@ -1468,10 +1439,9 @@ function openInfoModal(id) {
   document.getElementById('info-entry').textContent = entry > 0 ? `$${fmtPrice(entry)}` : '—';
   document.getElementById('info-stop').textContent = stop > 0 ? `$${fmtPrice(stop)}` : '—';
 
-  // Cálculo de distancia 1R y Targets
+  // Targets según stop
   const riskUnit = Math.abs(entry - stop);
   if (entry > 0 && stop > 0 && riskUnit > 0) {
-    document.getElementById('info-risk-usd').textContent = `$${fmt(riskUnit)}`;
     const stopPct = (riskUnit / entry) * 100;
     document.getElementById('info-stop-pct').textContent = `-${fmt(stopPct)}%`;
 
@@ -1485,7 +1455,6 @@ function openInfoModal(id) {
       document.getElementById('info-target-3r').textContent = `$${fmtPrice(entry - (3 * riskUnit))}`;
     }
   } else {
-    document.getElementById('info-risk-usd').textContent = '—';
     document.getElementById('info-stop-pct').textContent = '—';
     document.getElementById('info-target-1r').textContent = '—';
     document.getElementById('info-target-2r').textContent = '—';
