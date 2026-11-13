@@ -233,9 +233,11 @@
     .cell-symbol { font-family: var(--mono); font-weight: 600; font-size: 13px; color: var(--blue); cursor: pointer; }
     .cell-symbol:hover { text-decoration: underline; }
     
-    .badge { display: inline-flex; padding: 3px 7px; border-radius: 5px; font-family: var(--mono); font-size: 10px; font-weight: 500; }
+    .badge { display: inline-flex; padding: 3px 7px; border-radius: 5px; font-family: var(--mono); font-size: 10px; font-weight: 600; }
     .badge-long { background: var(--green-dim); color: var(--green-light); }
     .badge-short { background: var(--red-dim); color: var(--red); }
+    .badge-trade { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(88, 166, 255, 0.25); }
+    .badge-swing { background: var(--gold-dim); color: var(--gold); border: 1px solid rgba(245, 166, 35, 0.3); }
     .tag-pill { display: inline-flex; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-family: var(--mono); background: var(--blue-dim); color: var(--blue); }
     .thumb-btn { width: 34px; height: 26px; border-radius: 5px; border: 1px dashed var(--border); background: transparent; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; overflow: hidden; }
     .thumb-btn img { width: 100%; height: 100%; object-fit: cover; }
@@ -507,6 +509,7 @@
           <tr>
             <th>Fecha</th>
             <th>Activo</th>
+            <th>Tipo</th>
             <th>Dir.</th>
             <th>Patrón / Setup</th>
             <th>Entrada</th>
@@ -603,7 +606,7 @@
 
 </div>
 
-<!-- MODAL REGISTRO CON SALIDAS PARCIALES -->
+<!-- MODAL REGISTRO / EDICIÓN CON TIPO DE OPERACIÓN Y SALIDAS PARCIALES -->
 <div class="modal-overlay" id="addModal" onclick="closeModalIfOverlay(event)">
   <div class="modal">
     <div class="modal-header">
@@ -623,6 +626,14 @@
         </div>
 
         <div class="form-group">
+          <label class="form-label">Tipo (Trade / Swing)</label>
+          <select class="form-select" id="f-optype">
+            <option value="TRADE">TRADE</option>
+            <option value="SWING">SWING</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="grid-column: span 1;">
           <label class="form-label">Dirección</label>
           <select class="form-select" id="f-direction" onchange="onDirectionOrPriceChange()">
             <option value="LONG">Long</option>
@@ -630,7 +641,7 @@
           </select>
         </div>
 
-        <div class="form-group full highlighted-field">
+        <div class="form-group highlighted-field" style="grid-column: span 2;">
           <label class="form-label">Patrón / Setup <span class="req-tag">* Requerido</span></label>
           <input type="text" class="form-input" id="f-setup" list="setup-list" placeholder="Elige o escribe el patrón...">
           <datalist id="setup-list"></datalist>
@@ -718,8 +729,9 @@
 <div class="modal-overlay" id="infoModal" onclick="closeInfoModalIfOverlay(event)">
   <div class="modal" style="max-width: 620px;">
     <div class="modal-header">
-      <div style="display:flex; align-items:center; gap:10px;">
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
         <span class="cell-symbol" id="info-symbol" style="font-size:18px; cursor:default;">—</span>
+        <span id="info-optype" class="badge badge-trade">TRADE</span>
         <span id="info-direction" class="badge">LONG</span>
         <span id="info-status" class="tag-pill" style="font-weight:700;">🟢 ABIERTA</span>
       </div>
@@ -837,6 +849,26 @@ function fmt(num) {
 function fmtPrice(num) {
   if (!num) return '—';
   return parseFloat(num).toLocaleString('es-ES', { maximumFractionDigits: 5 });
+}
+
+/* ─── HELPERS PARA TIPO DE OPERACIÓN (TRADE / SWING) SIN TOCAR SCHEMA SUPABASE ─── */
+function getTradeOpType(t) {
+  if (t.op_type) return t.op_type.toUpperCase();
+  const notes = t.notes || '';
+  const match = notes.match(/\[TIPO:\s*(TRADE|SWING)\]/i);
+  if (match) return match[1].toUpperCase();
+  return 'TRADE';
+}
+
+function getCleanNotes(notes) {
+  if (!notes) return '';
+  return notes.replace(/\[TIPO:\s*(TRADE|SWING)\]\s*/gi, '').trim();
+}
+
+function injectOpTypeIntoNotes(cleanNotes, opType) {
+  const typeTag = `[TIPO: ${(opType || 'TRADE').toUpperCase()}]`;
+  const stripped = getCleanNotes(cleanNotes);
+  return stripped ? `${typeTag}\n${stripped}` : typeTag;
 }
 
 /* ─── TEMA CLARO / OSCURO ─── */
@@ -1154,6 +1186,7 @@ function pasarCalculoAHistorial() {
   switchTab('journal');
   openAddModal();
 
+  document.getElementById('f-optype').value = currentOpType;
   if (ticker) document.getElementById('f-symbol').value = ticker;
   if (entry) document.getElementById('f-entry').value = entry;
   if (stop) document.getElementById('f-stop').value = stop;
@@ -1353,7 +1386,7 @@ function renderTable() {
   }
 
   if (!sorted.length) {
-    tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; padding: 2rem; color:var(--text-muted)">Sin operaciones registradas${searchTicker ? ` para "${searchTicker}"` : ''}.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="12" style="text-align:center; padding: 2rem; color:var(--text-muted)">Sin operaciones registradas${searchTicker ? ` para "${searchTicker}"` : ''}.</td></tr>`;
     return;
   }
 
@@ -1362,6 +1395,9 @@ function renderTable() {
     const pnlText = pnl !== null ? `${pnl >= 0 ? '+' : '-'}$${fmt(Math.abs(pnl))}` : '—';
     const badgeCls = t.direction === 'LONG' ? 'badge-long' : 'badge-short';
     
+    const opType = getTradeOpType(t);
+    const opTypeCls = opType === 'SWING' ? 'badge-swing' : 'badge-trade';
+
     let rText = '—';
     let rClass = '';
     if (t.entry && t.stop && t.exit) {
@@ -1385,6 +1421,7 @@ function renderTable() {
     return `<tr>
       <td class="cell-mono">${formatDate(t.date)}</td>
       <td class="cell-symbol" onclick="openInfoModal('${t.id}')" title="Ver objetivos en R y detalles">${t.symbol}</td>
+      <td><span class="badge ${opTypeCls}">${opType}</span></td>
       <td><span class="badge ${badgeCls}">${t.direction}</span></td>
       <td><span class="tag-pill">${t.setup || '—'}</span></td>
       <td class="cell-mono">${fmtPrice(t.entry)}</td>
@@ -1419,9 +1456,14 @@ function openInfoModal(id) {
   const shares = parseFloat(t.shares) || 0;
   const isLong = t.direction === 'LONG';
   const isOpen = (!t.exit || t.exit === '');
+  const opType = getTradeOpType(t);
 
   document.getElementById('info-symbol').textContent = t.symbol || '—';
   
+  const opBadge = document.getElementById('info-optype');
+  opBadge.className = `badge ${opType === 'SWING' ? 'badge-swing' : 'badge-trade'}`;
+  opBadge.textContent = opType;
+
   const dirBadge = document.getElementById('info-direction');
   dirBadge.className = `badge ${isLong ? 'badge-long' : 'badge-short'}`;
   dirBadge.textContent = t.direction || 'LONG';
@@ -1497,7 +1539,8 @@ function openInfoModal(id) {
     pnlEl.style.color = 'var(--text-muted)';
   }
 
-  document.getElementById('info-notes').textContent = t.notes ? t.notes.trim() : 'Sin notas registradas.';
+  const cleanedNotes = getCleanNotes(t.notes);
+  document.getElementById('info-notes').textContent = cleanedNotes || 'Sin notas registradas.';
 
   // Ver gráfico si está disponible
   const chartBox = document.getElementById('infoChartBtnContainer');
@@ -1670,6 +1713,7 @@ function openAddModal() {
   partials = [];
 
   document.getElementById('f-symbol').value = '';
+  document.getElementById('f-optype').value = currentOpType || 'TRADE';
   document.getElementById('f-setup').value = '';
   document.getElementById('f-shares').value = '';
   document.getElementById('f-pnl').value = '';
@@ -1699,6 +1743,7 @@ function openEditModal(id) {
   
   document.getElementById('f-date').value = t.date;
   document.getElementById('f-symbol').value = t.symbol;
+  document.getElementById('f-optype').value = getTradeOpType(t);
   document.getElementById('f-direction').value = t.direction;
   document.getElementById('f-setup').value = t.setup || '';
   document.getElementById('f-shares').value = t.shares || '';
@@ -1706,7 +1751,7 @@ function openEditModal(id) {
   document.getElementById('f-entry').value = t.entry || '';
   document.getElementById('f-stop').value = t.stop || '';
   document.getElementById('f-exit').value = t.exit || '';
-  document.getElementById('f-notes').value = t.notes || '';
+  document.getElementById('f-notes').value = getCleanNotes(t.notes);
 
   const chk = document.getElementById('f-use-partials');
   chk.checked = false;
@@ -1727,6 +1772,7 @@ async function saveTrade() {
   const symbolVal = document.getElementById('f-symbol').value.toUpperCase().trim();
   if (!symbolVal) { alert('El símbolo es obligatorio.'); return; }
 
+  const opTypeVal = document.getElementById('f-optype').value;
   const pnlVal = document.getElementById('f-pnl').value;
   const entryVal = document.getElementById('f-entry').value;
   const stopVal = document.getElementById('f-stop').value;
@@ -1745,6 +1791,9 @@ async function saveTrade() {
     }
   }
 
+  // Inyectar la etiqueta de tipo de operación para persistencia transparente en Supabase
+  const finalNotesWithOpType = injectOpTypeIntoNotes(notesVal, opTypeVal);
+
   const data = {
     date: document.getElementById('f-date').value,
     symbol: symbolVal,
@@ -1755,7 +1804,7 @@ async function saveTrade() {
     entry: entryVal !== '' ? parseFloat(entryVal) : null,
     stop: stopVal !== '' ? parseFloat(stopVal) : null,
     exit: exitVal !== '' ? parseFloat(exitVal) : null,
-    notes: notesVal,
+    notes: finalNotesWithOpType,
     image: currentImage
   };
 
